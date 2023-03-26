@@ -1,7 +1,7 @@
-import os
-import csv
-import sys
-import re
+# import os
+# import csv
+# import sys
+# import re
 
 # from surprise import Dataset
 # from surprise import Reader
@@ -12,8 +12,8 @@ import pandas as pd
 
 class MovieLens:
 
-    RATINGS_PATH = '../ml-latest-small/ratings.csv'
-    MOVIES_PATH = '../ml-latest-small/movies.csv'
+    RATINGS_PATH = '../preprocessing/ratings.csv'
+    MOVIES_PATH = '../preprocessing/movies.csv'
     
     # Dictionary to map movies' titles and IDs
     movieID_to_name = {}
@@ -25,44 +25,13 @@ class MovieLens:
     movies = pd.DataFrame()
     
     def __init__(self):
-        self.loadRatings()
-        self.loadMovies()
+        self.loadData()
         self.mapMovies()
     
-    def loadRatings(self):
-        ratings = pd.read_csv(self.RATINGS_PATH)
-        self.ratings = ratings
-        
-    def loadMovies(self):
-        movies = pd.read_csv(self.MOVIES_PATH)
-
-        # Convert the string in the 'genre' column into a list of elements
-        movies['genres'] = movies['genres'].str.split("|")
-        # replace (no genres listed) with NaN
-        # movies['genres'].replace('no genres listed', pd.np.nan, inplace=True)
-        
-        # Split the column 'title' into two: title and year and reorder the columns
-        # movies[['title', 'year']] = movies['title'].str.split('(', n=1, expand=True)
-        # movies['year'] = movies['year'].str.replace(')', '', regex=False
-        p = re.compile(r"(?:\((\d{4})\))?\s*$")
-        movies['year'] = movies['title'].apply(lambda x: p.search(x).group(1) if p.search(x) else None)
-        p = re.compile(r"\s*\(\d{4}\)$")
-        movies['title'] = movies['title'].apply(lambda x: p.sub("", x))
-        # Remove the spaces at the end of the title
-        movies['title'] = movies['title'].str.strip()
-        movies = movies.reindex(columns=['movieId', 'title', 'year','genres']) 
-
-        
-        # Convert the 'timestamp' variable to a datetime type
-        # movies['timestamp'] = pd.to_datetime(movies['timestamp'], unit='s')
-        # movies.head()
-
-        # Extract the date component from the timestamp field.
-        # movies['date'] = movies['timestamp'].dt.date
-        
-        # Save the dataframe into the global variable
-        self.movies = movies
-        self.mapMovies()
+    def loadData(self):
+        self.ratings = pd.read_csv(self.RATINGS_PATH)
+        self.movies = pd.read_csv(self.MOVIES_PATH)
+        # self.mapMovies()
 
     def mapMovies(self):
         for i in range(0,len(self.movies),1):
