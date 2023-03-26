@@ -14,53 +14,13 @@ import numpy as np
 from dash_bootstrap_templates import ThemeSwitchAIO
 
 
-## Variables
-# Hay que cargar el dataset desde la clase MovieLens()
-# movies_df = pd.read_csv("ml-latest-small/movies.csv")
-# movies_df = movies_df.sort_values('title').reset_index().drop(["index"],axis=1)
-
-#from .MovieLens import MovieLens --> solo si el archivo está en la misma carpeta
-
-
-#sys.path.insert(1, '\\movies')
-# sys.path.insert(0,"..")
-# from movies.movieLens import MovieLens
-# #import MovieLens
 
 from sys import path
 from os import getcwd
 import os
-#path.append(str(os.getcwd())+"\\movies") # Windows
-# path.append("..") 
-# print("Directorio: "+os.getcwd())
-# os.chdir(os.getcwd()+"\\movies")
-# print("Directorio2: "+os.getcwd())
-#print("Directorio: "+os.getcwd()+"\\movies")
-#print(..)
-#path.append(os.getcwd()+"\\movies") # Windows
-#print(path)
-#from .movieLens import MovieLens
-
-# NO ENTIENDO. DA PROBLEMA PERO FUNCIONA
-#os.chdir(os.getcwd()+"\\movies")
 path.append(os.getcwd()+"\\movies") # Windows
-print("AAAA: "+os.getcwd()+"\\movies")
-#print("Directorio: "+os.getcwd())
-#from movies.movieLens import MovieLens
+#os.chdir('..')
 from movieLens import MovieLens
-#import movieLens
-
-# import sys
-# sys.path.insert(1, os.getcwd()+"\\movies")
-# import movieLens
-
-# Insert the path of modules folder 
-# import sys
-# sys.path.insert(0, str(os.getcwd())+"\\movies")
-  
-# # Import the module0 directly since 
-# # the current path is of modules.
-# from movieLens
 
 ml = MovieLens()
 movies_df = ml.movies
