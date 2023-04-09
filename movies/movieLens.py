@@ -109,7 +109,7 @@ class MovieLens:
         # Keep track of the number of genres
         maxGenreID = 0
         
-        # apply ast.literal_eval to each element of the column genres to transform it into a list
+        # Apply ast.literal_eval to each element of the column genres to transform it into a list
         self.movies['genres'] = self.movies['genres'].apply(ast.literal_eval)
 
         # Iterate over the rows of the dataframe
