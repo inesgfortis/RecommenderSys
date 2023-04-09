@@ -9,6 +9,7 @@
 from collections import defaultdict
 import numpy as np
 import pandas as pd
+import ast
 
 class MovieLens:
 
@@ -18,15 +19,22 @@ class MovieLens:
     # Dictionary to map movies' titles and IDs
     movieID_to_name = {}
     name_to_movieID = {}
-    genre_to_genreID = {}
     
     # Dataframes
     ratings = pd.DataFrame()
     movies = pd.DataFrame()
     
+    # Dictionary that maps movie IDs to lists of genre IDs
+    # For each movie, we have a list indicating whether the movie contains each genre or not.  
+    movies_genres = defaultdict(list)
+    
+    # Dictionary that maps genres to their corresponding IDs."
+    genre_to_genreID = {}
+    
     def __init__(self):
         self.loadData()
         self.mapMovies()
+        self.getGenres()
     
     def loadData(self):
         self.ratings = pd.read_csv(self.RATINGS_PATH)
@@ -90,30 +98,31 @@ class MovieLens:
 #         return rankings
     
     def getGenres(self):
-        # Create a dictionary that maps movie IDs to lists of genre IDs
-        # For each movie, we have a list indicating whether the movie contains each genre or not.
-        genres = defaultdict(list)
-
-        # Create a dictionary that maps genres to their corresponding IDs."
-        #genre_to_genreID = {}
-
+        
+        """
+        This function is in charge of completing the dictionary that maps movie IDs to lists of genre IDs (movies_genres)
+        as well as the dictionary that maps genres to their corresponding IDs (genre_to_genreID)
+        
+        """
+        
         # Assign an ID to the existing genres
         # Keep track of the number of genres
         maxGenreID = 0
+        
+        # apply ast.literal_eval to each element of the column genres to transform it into a list
+        self.movies['genres'] = self.movies['genres'].apply(ast.literal_eval)
 
-        # Open the movies CSV file
-        #movies = self.loadMovies()
-
-        for i in range(0,len(self.movies),1):
+        # Iterate over the rows of the dataframe
+        for index, row in self.movies.iterrows():
             # Get the movie ID from the first column of the row
-            movieID = self.movies['movieId'][i]
+            movieID = row['movieId']
             # Get a list of genre names from the third column of the row
-            genreList = self.movies['genres'][i]
-            #print(genreList)
+            genreList = row['genres']
+            #print(type(genreList))
 
             # Create a list of genre IDs for the movie
             genreIDList = []
-            # Loop over each genre name
+            # Loop over each genre
             for genre in genreList:
                 # If we've seen this genre before, use its existing ID
                 if genre in self.genre_to_genreID:
@@ -126,26 +135,20 @@ class MovieLens:
                     genreID = maxGenreID
                     self.genre_to_genreID[genre] = genreID
                     maxGenreID += 1
+
                 # Add the genre ID to the list of genre IDs for the movie
                 genreIDList.append(genreID)
-                #print(genreIDList)
-
-                #if genre == "(no genres listed)":
-                    #print(i)
 
             # Add the list of genre IDs to the genres dictionary for the movie
-            genres[movieID] = genreIDList
+            self.movies_genres[movieID] = genreIDList
 
         # Convert the integer-encoded genre lists to bitfields that we can treat as vectors
-        for (movieID, genreIDList) in genres.items():
+        for (movieID, genreIDList) in self.movies_genres.items():
             bitfield = [0] * maxGenreID
             for genreID in genreIDList:
                 bitfield[genreID] = 1
-            genres[movieID] = bitfield
-        
-        #print(self.genre_to_genreID)
-        # Return the genres dictionary
-        return genres
+                self.movies_genres[movieID] = bitfield   
+
 
     
 #     def getMiseEnScene(self):
