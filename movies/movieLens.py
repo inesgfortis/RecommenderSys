@@ -148,7 +148,20 @@ class MovieLens:
             for genreID in genreIDList:
                 bitfield[genreID] = 1
                 self.movies_genres[movieID] = bitfield   
+ 
 
+    def filterMoviesByGenres(self,movie_title):
+        
+        # Determine which are the genres associated to the reference movie
+        movie_id = self.name_to_movieID[movie_title]
+        desired_genre_ids = self.movies_genres[movie_id]
+
+        # Filter the dataframe to include only the movies that contain at least one of the desired genres
+        mask = [any(self.movies_genres[int(movie_id)][gid] for gid in desired_genre_ids) 
+                for movie_id in self.movies['movieId'].astype(int)]
+        filtered_df = self.movies[mask]
+
+        return filtered_df
 
     
 #     def getMiseEnScene(self):
