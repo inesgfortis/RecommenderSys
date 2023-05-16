@@ -73,6 +73,35 @@ class MovieLens:
 
         return userRatings
 
+    
+    def getMostRated(self):
+        """
+        This function calculates the rankings of movies based on the number of ratings they have received.
+
+        Returns:
+            dict: A dictionary containing movie rankings based on the number of ratings received.
+        """
+
+        ratings = {}  # Dictionary to store the count of ratings for each movie
+        rankings = {}  # Dictionary to store the rankings of movies
+
+        # Count the number of times each movie has been rated
+        for i in range(len(self.ratings)):
+            movieID = self.ratings['movieId'][i]
+            if movieID in ratings:
+                ratings[movieID] += 1
+            else:
+                ratings[movieID] = 1
+
+        # Sort the movies according to the number of ratings received
+        rank = 1
+        for movieID, ratingCount in sorted(ratings.items(), key=lambda x: x[1], reverse=True):
+            rankings[movieID] = rank
+            rank += 1
+
+        return rankings
+  
+    
     def getYears(self):
         years = defaultdict(int)
         for i in range(0,len(self.movies),1):
@@ -81,21 +110,6 @@ class MovieLens:
             if year:
                 years[movieID] = year
         return years
-    
-#     def getPopularityRanks(self):
-#         ratings = defaultdict(int)
-#         rankings = defaultdict(int)
-#         with open(self.ratingsPath, newline='') as csvfile:
-#             ratingReader = csv.reader(csvfile)
-#             next(ratingReader)
-#             for row in ratingReader:
-#                 movieID = int(row[1])
-#                 ratings[movieID] += 1
-#         rank = 1
-#         for movieID, ratingCount in sorted(ratings.items(), key=lambda x: x[1], reverse=True):
-#             rankings[movieID] = rank
-#             rank += 1
-#         return rankings
     
     def getGenres(self):
         
