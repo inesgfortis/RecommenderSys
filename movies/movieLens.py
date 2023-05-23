@@ -13,8 +13,8 @@ import ast
 
 class MovieLens:
 
-    RATINGS_PATH = '../preprocessing/ratings.csv'
-    MOVIES_PATH = '../preprocessing/movies.csv'
+    RATINGS_PATH = '../preprocessing/small-dataset/ratings.csv'
+    MOVIES_PATH = '../preprocessing/small-dataset/movies.csv'
     
     # Dictionary to map movies' titles and IDs
     movieID_to_name = {}
