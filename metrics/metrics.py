@@ -269,4 +269,33 @@ class evaluationMetrics:
 
         novelty = total/n
         return novelty
+    
+    
+    
+    def addToMetricsDataframe(self,dataframe):
+        """
+        Appends rows from the input DataFrame to an existing metrics Excel file.
+        If the file doesn't exist, creates a new metrics DataFrame with the required columns.
+
+        Args:
+            dataframe (pd.DataFrame): DataFrame containing the new metrics to be appended.
+
+        Returns:
+            None
+        """
+        # File path
+        FILE_PATH = "metrics.xlsx"
+        
+        # Load existing metrics file or create a new one if it doesn't exist
+        try:
+            existing_metrics = pd.read_excel(FILE_PATH)
+        except FileNotFoundError:
+            existing_metrics = pd.DataFrame(columns=["Model", "RMSE", "MAE", "MAP", "MAR", "Mean_NDCG",
+                                                     "Coverage", "User_Coverage", "Novelty"])
+
+        # Append new rows to the existing metrics DataFrame
+        updated_metrics = pd.concat([existing_metrics, dataframe], ignore_index=True)
+
+        # Save the updated metrics DataFrame to the Excel file
+        updated_metrics.to_excel(FILE_PATH, index=False)
 
