@@ -4,26 +4,26 @@
 Updated on Sun Dec 1 08:32:13 2019
 
 @author: Frank
+
 @modified: Saurabh
 """
 
 import numpy as np
 import tensorflow as tf
 
-
 class RBM(object):
 
     def __init__(self, visibleDimensions, epochs=20, hiddenDimensions=50, ratingValues=10, learningRate=0.001, batchSize=100):
 
-        self.visibleDimensions = visibleDimensions
+        self.visibleDimensions = visibleDimensions # product of the number of movies and how many distinct rating values you have
         self.epochs = epochs
         self.hiddenDimensions = hiddenDimensions
-        self.ratingValues = ratingValues
+        self.ratingValues = ratingValues # unique rating values
         self.learningRate = learningRate
         self.batchSize = batchSize
         
-                
-    def train(self, X):
+    # in order to reconstract any users rating for any item            
+    def Train(self, X):
 
         # Initialize weights randomly (earlier versions of thie code had this block inside MakeGraph, but that was a bug.)
         maxWeight = -4.0 * np.sqrt(6.0 / (self.hiddenDimensions + self.visibleDimensions))
@@ -36,18 +36,18 @@ class RBM(object):
             trX = np.array(X)
             for i in range(0, trX.shape[0], self.batchSize):
                 epochX = trX[i:i+self.batchSize]
-                self.makeGraph(epochX)
+                self.MakeGraph(epochX)
 
             print("Trained epoch ", epoch)
 
-
-    def getRecommendations(self, inputUser):
+    # get back rating predictions for a given user
+    def GetRecommendations(self, inputUser):
         
-        feed = self.makeHidden(inputUser)
-        rec = self.makeVisible(feed)
+        feed = self.MakeHidden(inputUser)
+        rec = self.MakeVisible(feed)
         return rec[0]       
 
-    def makeGraph(self, inputUser):
+    def MakeGraph(self, inputUser):
         
         # Perform Gibbs Sampling for Contrastive Divergence, per the paper we assume k=1 instead of iterating over the 
         # forward pass multiple times since it seems to work just fine
@@ -91,12 +91,12 @@ class RBM(object):
 
         self.update = [weightUpdate, hiddenBiasUpdate, visibleBiasUpdate]
         
-    def makeHidden(self, inputUser):
+    def MakeHidden(self, inputUser):
         hidden = tf.nn.sigmoid(tf.matmul(inputUser, self.weights) + self.hiddenBias)
-        self.makeGraph(inputUser)
+        self.MakeGraph(inputUser)
         return hidden
     
-    def makeVisible(self, feed):
+    def MakeVisible(self, feed):
         visible = tf.nn.sigmoid(tf.matmul(feed, tf.transpose(self.weights)) + self.visibleBias)
         #self.MakeGraph(feed)
         return visible
