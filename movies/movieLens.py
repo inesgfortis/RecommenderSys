@@ -178,20 +178,42 @@ class MovieLens:
         return filtered_df
 
     
-#     def getMiseEnScene(self):
-#         mes = defaultdict(list)
-#         with open("LLVisualFeatures13K_Log.csv", newline='') as csvfile:
-#             mesReader = csv.reader(csvfile)
-#             next(mesReader)
-#             for row in mesReader:
-#                 movieID = int(row[0])
-#                 avgShotLength = float(row[1])
-#                 meanColorVariance = float(row[2])
-#                 stddevColorVariance = float(row[3])
-#                 meanMotion = float(row[4])
-#                 stddevMotion = float(row[5])
-#                 meanLightingKey = float(row[6])
-#                 numShots = float(row[7])
-#                 mes[movieID] = [avgShotLength, meanColorVariance, stddevColorVariance,
-#                    meanMotion, stddevMotion, meanLightingKey, numShots]
-#         return mes
+
+    def getPreferences(self, userId, k):
+        """
+        Get the top k movies with the highest ratings and the bottom k movies with the lowest ratings for a given userId.
+
+        Args:
+            userId (int): The ID of the user.
+            k (int): The number of top and bottom movies to retrieve.
+
+        Returns:
+            top_movies (pandas.DataFrame): The DataFrame with the top k movies with highest ratings, including movie names.
+            bottom_movies (pandas.DataFrame): The DataFrame with the bottom k movies with lowest ratings, including movie names.
+        """
+
+        # Filter ratings for the specified userId
+        user_ratings = self.ratings[self.ratings['userId'] == userId].copy()
+        
+        # Add columns 'title' and 'genres' and remvove columns 'year' and 'timestamp'
+        user_ratings = pd.merge(user_ratings,self.movies, on='movieId')
+        user_ratings = user_ratings.drop(columns=['year', 'timestamp'])
+        
+        # Reorder the columns
+        user_ratings = user_ratings[['userId','movieId','title','rating','genres']]
+
+        
+               
+        # user_ratings['title'] = user_ratings['movieId'].map(self.movieID_to_name)
+        # user_ratings['genre']
+        #user_ratings = user_ratings[['userId','movieId','title','rating','genres']]
+
+        # Sort movies by rating in descending order
+        sorted_movies = user_ratings.sort_values(by='rating', ascending=False)
+
+        # Get the top k movies with highest and lowest ratings
+        top_movies = sorted_movies.head(k).copy()
+        bottom_movies = sorted_movies.tail(k).copy()  
+
+        return top_movies, bottom_movies
+
