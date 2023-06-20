@@ -202,12 +202,6 @@ class MovieLens:
         # Reorder the columns
         user_ratings = user_ratings[['userId','movieId','title','rating','genres']]
 
-        
-               
-        # user_ratings['title'] = user_ratings['movieId'].map(self.movieID_to_name)
-        # user_ratings['genre']
-        #user_ratings = user_ratings[['userId','movieId','title','rating','genres']]
-
         # Sort movies by rating in descending order
         sorted_movies = user_ratings.sort_values(by='rating', ascending=False)
 
