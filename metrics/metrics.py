@@ -315,7 +315,7 @@ class evaluationMetrics:
             existing_file = pd.read_excel(file_path)
         except FileNotFoundError:
             existing_file = pd.DataFrame(columns=["Model", "Recommendations"])
-
+        
         # Create a DataFrame with new recommendations
         new_data = pd.DataFrame({"Model": [model_name],"Recommendations": [recommendations]})
 
