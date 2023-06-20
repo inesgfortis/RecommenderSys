@@ -298,4 +298,30 @@ class evaluationMetrics:
 
         # Save the updated metrics DataFrame to the Excel file
         updated_metrics.to_excel(FILE_PATH, index=False)
+        
+    
+    def addUserRecommendations(self, file_path, model_name, recommendations):
+        """
+        Add model recommendations to the corresponding columns in an existing DataFrame and save it to an Excel file.
+
+        Args:
+            file_path (str): The path of the existing Excel file.
+            model_name (str): The name of the model.
+            recommendations (list): A list of recommendations.
+
+        """
+        # Load existing metrics file or create a new one if it doesn't exist
+        try:
+            existing_file = pd.read_excel(file_path)
+        except FileNotFoundError:
+            existing_file = pd.DataFrame(columns=["Model", "Recommendations"])
+
+        # Create a DataFrame with new recommendations
+        new_data = pd.DataFrame({"Model": [model_name],"Recommendations": [recommendations]})
+
+        # Append new rows to the existing metrics DataFrame
+        updated_file = pd.concat([existing_file, new_data], ignore_index=True)
+
+        # Save the updated metrics DataFrame to the Excel file
+        updated_file.to_excel(file_path, index=False)
 

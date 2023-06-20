@@ -1,10 +1,3 @@
-# import os
-# import csv
-# import sys
-# import re
-
-# from surprise import Dataset
-# from surprise import Reader
 
 from collections import defaultdict
 import numpy as np
