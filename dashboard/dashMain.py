@@ -1,7 +1,9 @@
 # Importamos las librerias mínimas necesarias
 import dash
-from dash import html
+from dash import html, callback, Input, Output, State, ctx
 import dash_bootstrap_components as dbc
+#from dash import redirect
+
 
 #from dash_bootstrap_templates import ThemeSwitchAIO
 
@@ -9,8 +11,6 @@ import dash_bootstrap_components as dbc
 app = dash.Dash(__name__,external_stylesheets=[dbc.themes.MINTY], use_pages=True)
 app.title="TFG"
 
-# Import your pages here
-#import pages.dashMovies
 
 app.layout = dbc.Container(
     children = [
@@ -39,8 +39,6 @@ app.layout = dbc.Container(
     ], fluid = True)
 
 
-
-
 ########################################################################################################################
 ########################################################################################################################
 
@@ -49,3 +47,5 @@ if __name__ == '__main__':
 
 ########################################################################################################################
 ########################################################################################################################
+
+

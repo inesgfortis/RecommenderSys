@@ -1,7 +1,8 @@
 # Importamos las librerias mínimas necesarias
 import dash
-from dash import html, callback
+from dash import html
 import dash_bootstrap_components as dbc
+
 from dash import dcc
 
 import pandas as pd
@@ -203,6 +204,7 @@ layout = dbc.Container(
 
 # Callback the genre input del callback de movies
 # Añadir boton link (apply filters)
+
 
 
 ########################################################################################################################
