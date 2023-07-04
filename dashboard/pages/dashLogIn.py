@@ -1,43 +1,26 @@
 # Importamos las librerias mínimas necesarias
 import dash
-from dash import html, callback, Input, Output, State, ctx
+from dash import dcc,html, callback, Input, Output, State, ctx
 import dash_bootstrap_components as dbc
-#from dash.dependencies import Event
-from dash import dcc
-
-import pandas as pd
-import numpy as np
-
-#from dash import redirect
-
-
-# import plotly.graph_objects as go
-# import plotly.express as px
-# import plotly.figure_factory as ff
-
-from dash_bootstrap_templates import ThemeSwitchAIO
-
-# from sys import path
-# from os import getcwd
+# import pandas as pd
+# import numpy as np
 
 import pickle
 
-# Load recommendations
-with open('./recommendations.pkl', 'rb') as file:
-    recommendations = pickle.load(file)
+# # Load recommendations
+# with open('./recommendations.pkl', 'rb') as file:
+#     recommendations = pickle.load(file)
 
-# ml = MovieLens()
-# movies_df = ml.movies
-# movies_df = movies_df.sort_values('title').reset_index().drop(["index"],axis=1)
 
+# Load user-password database
+with open('./user_password_dict.pkl', 'rb') as file:
+    user_password_dict = pickle.load(file)
 
 
 ## Dash
-
 # Main page
 dash.register_page(__name__, path = "/", name = "Login")
 
-# Filtros 2 y 3 afectando al filtro 1
 
 ########################################################################################################################
 # TAB CONTENT
@@ -60,6 +43,8 @@ layout = dbc.Container(
                                     dbc.Input(type="password", id="password", placeholder="Password", className="mb-3"),
                                     dbc.Button("Login", id="login-button", color="primary", className="mt-3"),
                                     dcc.ConfirmDialog(id='username-error-popup', message="User does not exist. Please register.", displayed=False),
+                                    dcc.ConfirmDialog(id='password-error-popup', message="Incorrect password. Please try again.", displayed=False),
+                                    dcc.ConfirmDialog(id='login-success-popup', message="Successful login.", displayed=False),
                                 ]
                             ),
                         ],
@@ -94,61 +79,49 @@ layout = dbc.Container(
     }
 )
 
+
 ########################################################################################################################
 # FUNCTIONS
 ########################################################################################################################
 
-
-
-
+def get_password(username):
+    for user_info in user_password_dict.values():
+        if user_info['user'] == username:
+            return user_info['password']
+    return None
 
 
 ########################################################################################################################
 # CALLBACKS
 ########################################################################################################################
-existing_usernames = ["user1", "user2", "user3"]
 
+# Login button
 @callback(
     Output('username-error-popup', 'displayed'),
+    Output('password-error-popup', 'displayed'),
+    Output('login-success-popup', 'displayed'),
     [Input('login-button', 'n_clicks')],
-    [State('username', 'value')]
+    [State('username', 'value'), State('password', 'value')]
 )
 
-def handle_login_button(n_clicks, username):
+def handle_login_button(n_clicks, username, password):
+    existing_usernames = [user['user'] for user in user_password_dict.values()]
+
+    # User does not exist
     if n_clicks and username not in existing_usernames:
-        return True
-    return False
+        return True, False, False
 
-# @callback(
-#     Output('url', 'pathname'), 
-#     [Input('login-button', 'n_clicks')], 
-#     [State('username', 'value'),State('password', 'value')])
+    # User exists but incorrect password
+    if n_clicks and username in existing_usernames and password != get_password(username):
+        return False, True, False
+    
+    # User exists and correct password
+    if n_clicks and username in existing_usernames and password == get_password(username):
+        return False, False, True
 
-# def handle_login(n_clicks, username, password):
-#     if n_clicks is not None and username == 'user1' and password == '123':
-#         return '/Movies'
-#     else:
-#         return '/'
-
-# @callback(
-#     Output('url', 'pathname'),
-#     [Input('login-button', 'n_clicks')],
-#     [State('username', 'value'), State('password', 'value')]
-# )
-# def handle_login(n_clicks, username, password):
-#     if n_clicks is not None and username == 'your_username' and password == 'your_password':
-#         return '/movies'
-#     else:
-#         return '/'
+    return False, False, False
 
 
-# Redirect to the recommendations page
-# @callback(Output('url', 'pathname'), [Event('login-button', 'click')], [State('username', 'value'), State('password', 'value')])
-# def handle_login(username, password):
-#     if username == 'user1' and password == '123':
-#         return '/movies'
-#     else:
-#         return '/'
 
 ########################################################################################################################
 ########################################################################################################################
