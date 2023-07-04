@@ -8,7 +8,7 @@ import dash_bootstrap_components as dbc
 #from dash_bootstrap_templates import ThemeSwitchAIO
 
 ## App
-app = dash.Dash(__name__,external_stylesheets=[dbc.themes.MINTY], use_pages=True)
+app = dash.Dash(__name__,external_stylesheets=[dbc.themes.JOURNAL], use_pages=True)
 app.title="TFG"
 
 

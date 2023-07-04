@@ -1,16 +1,8 @@
-# Importamos las librerias mínimas necesarias
+# Libraries
+import pickle
 import dash
 from dash import dcc,html, callback, Input, Output, State, ctx
 import dash_bootstrap_components as dbc
-# import pandas as pd
-# import numpy as np
-
-import pickle
-
-# # Load recommendations
-# with open('./recommendations.pkl', 'rb') as file:
-#     recommendations = pickle.load(file)
-
 
 # Load user-password database
 with open('./user_password_dict.pkl', 'rb') as file:
@@ -28,57 +20,40 @@ dash.register_page(__name__, path = "/", name = "Login")
 
 layout = dbc.Container(
     [
-        dbc.Row(dbc.Col(html.H2('MOVIE RECOMMENDATIONS', className='text-left text-primary, mb-3'))),  # header row
-
         dbc.Row(
-            [
-                # Login Card
-                dbc.Col(
-                    dbc.Card(
-                        [
-                            dbc.CardHeader("Login", className="bg-primary text-white"),
-                            dbc.CardBody(
-                                [
-                                    dbc.Input(type="text", id="username", placeholder="Username", className="mb-3"),
-                                    dbc.Input(type="password", id="password", placeholder="Password", className="mb-3"),
-                                    dbc.Button("Login", id="login-button", color="primary", className="mt-3"),
-                                    dcc.ConfirmDialog(id='username-error-popup', message="User does not exist. Please register.", displayed=False),
-                                    dcc.ConfirmDialog(id='password-error-popup', message="Incorrect password. Please try again.", displayed=False),
-                                    dcc.ConfirmDialog(id='login-success-popup', message="Successful login.", displayed=False),
-                                ]
-                            ),
-                        ],
-                        className="mb-3"
-                    ),
-                    width=6,
+            dbc.Col(
+                dbc.Card(
+                    [
+                        dbc.CardHeader("INICIAR SESIÓN", className="bg-primary text-white", style={"text-align": "left","height": "60px","font-size": "24px","display": "flex", "align-items": "center"}),
+                        dbc.CardBody(
+                            [
+                                dbc.Input(type="text", id="username", placeholder="Username", className="mb-3",style={"height": "50px"}),
+                                html.Div(style={"height": "10px"}),
+                                dbc.Input(type="password", id="password", placeholder="Password", className="mb-3",style={"height": "50px"}),
+                                dbc.Button("Continuar", id="login-button", color="primary", className="mt-3", style={"width": "100%"}),
+                                html.Div("¿Eres nuevo? Crea tu cuenta", className="mt-3"),
+                                dcc.ConfirmDialog(id='username-error-popup', message="User does not exist. Please register.", displayed=False),
+                                dcc.ConfirmDialog(id='password-error-popup', message="Incorrect password. Please try again.", displayed=False),
+                                dcc.ConfirmDialog(id='login-success-popup', message="Successful login.", displayed=False),
+                            ],
+                            style={"display": "flex", "flex-direction": "column", "align-items": "center", "justify-content": "center"}
+                        ),
+                    ],
+                    className="mb-3",
+                    style={"width": "400px", "height": "450px", "margin": "auto", "text-align": "center"}
                 ),
-
-                # New User Registration Card
-                dbc.Col(
-                    dbc.Card(
-                        [
-                            dbc.CardHeader("New User Registration", className="bg-success text-white"),
-                            dbc.CardBody(
-                                [
-                                    dbc.Input(type="text", id="new-username", placeholder="Username", className="mb-3"),
-                                    dbc.Input(type="password", id="new-password", placeholder="Password", className="mb-3"),
-                                    dbc.Button("Register", id="register-button", color="success", className="mt-3")
-                                ]
-                            ),
-                        ],
-                        className="mb-3"
-                    ),
-                    width=6,
-                ),
-            ]
+                width=6,
+                style={"margin": "auto"}
+            )
         ),
     ],
     fluid=True,
     style={
-        "padding": "4%"
+        "padding": "4%",
+        "background-image": "url('path_to_your_image')",  # Reemplaza 'path_to_your_image' con la ruta real de tu imagen
+        "background-size": "cover",
     }
 )
-
 
 ########################################################################################################################
 # FUNCTIONS
@@ -95,39 +70,33 @@ def get_password(username):
 # CALLBACKS
 ########################################################################################################################
 
-# Login button
+# Login button (continuar)
 @callback(
     Output('username-error-popup', 'displayed'),
     Output('password-error-popup', 'displayed'),
     Output('login-success-popup', 'displayed'),
+    Output('username', 'value'),  # Agrega esta salida para borrar el contenido del campo de entrada del nombre de usuario
+    Output('password', 'value'),  # Agrega esta salida para borrar el contenido del campo de entrada de la contraseña
     [Input('login-button', 'n_clicks')],
     [State('username', 'value'), State('password', 'value')]
 )
-
 def handle_login_button(n_clicks, username, password):
     existing_usernames = [user['user'] for user in user_password_dict.values()]
 
     # User does not exist
     if n_clicks and username not in existing_usernames:
-        return True, False, False
+        return True, False, False, '', ''
 
     # User exists but incorrect password
     if n_clicks and username in existing_usernames and password != get_password(username):
-        return False, True, False
-    
+        return False, True, False, username, ''
+
     # User exists and correct password
     if n_clicks and username in existing_usernames and password == get_password(username):
-        return False, False, True
+        return False, False, True, '', ''
 
-    return False, False, False
-
+    return False, False, False, username, password
 
 
 ########################################################################################################################
 ########################################################################################################################
-
-# def checkUser(userId):
-#     if userId in recommendations.keys():
-#         return True
-#     else:
-#         return False

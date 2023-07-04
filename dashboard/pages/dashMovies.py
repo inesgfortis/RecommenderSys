@@ -67,10 +67,10 @@ dash.register_page(__name__,name = "Movies")
 
 layout = dbc.Container(
     [
-        dbc.Row(dbc.Col(html.H2('MOVIE RECOMMENDATIONS', className='text-left text-primary, mb-3'))),  # header row
+        #dbc.Row(dbc.Col(html.H2('MOVIE RECOMMENDATIONS', className='text-left text-primary, mb-3'))),  # header row
 
         ## COMPONENTES INTERACTIVAS
-        ThemeSwitchAIO(aio_id="theme", themes=[dbc.themes.MINTY, dbc.themes.CYBORG]),
+        #ThemeSwitchAIO(aio_id="theme", themes=[dbc.themes.MINTY, dbc.themes.CYBORG]),
         dbc.Row(
             [
                 # Movies filter
