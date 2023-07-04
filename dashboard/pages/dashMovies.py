@@ -1,31 +1,15 @@
 # Importamos las librerias mínimas necesarias
 import dash
-from dash import html
+from dash import html, register_page
 import dash_bootstrap_components as dbc
 
 from dash import dcc
 
-import pandas as pd
-import numpy as np
-
-# import plotly.graph_objects as go
-# import plotly.express as px
-# import plotly.figure_factory as ff
-
-from dash_bootstrap_templates import ThemeSwitchAIO
-
-# from sys import path
-# from os import getcwd
-# import os
 import pickle
 
-# Load recommendations
+# # Load recommendations
 # with open('recommendations.pkl', 'rb') as file:
 #     recommendations = pickle.load(file)
-
-# ml = MovieLens()
-# movies_df = ml.movies
-# movies_df = movies_df.sort_values('title').reset_index().drop(["index"],axis=1)
 
 movies = [
     {
@@ -57,9 +41,13 @@ movies = [
 
 
 ## Dash
-dash.register_page(__name__,name = "Movies")
+register_page(
+    __name__,
+    name='Recommendations',
+    top_nav=True,
+    path='/Recommendations'
+)
 
-# Filtros 2 y 3 afectando al filtro 1
 
 ########################################################################################################################
 # TAB CONTENT
@@ -67,10 +55,6 @@ dash.register_page(__name__,name = "Movies")
 
 layout = dbc.Container(
     [
-        #dbc.Row(dbc.Col(html.H2('MOVIE RECOMMENDATIONS', className='text-left text-primary, mb-3'))),  # header row
-
-        ## COMPONENTES INTERACTIVAS
-        #ThemeSwitchAIO(aio_id="theme", themes=[dbc.themes.MINTY, dbc.themes.CYBORG]),
         dbc.Row(
             [
                 # Movies filter

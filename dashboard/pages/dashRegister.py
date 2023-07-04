@@ -1,6 +1,6 @@
 # Libraries
 import dash
-from dash import dcc,html, callback, Input, Output, State, ctx
+from dash import dcc,html, register_page, callback, Input, Output, State, ctx
 import dash_bootstrap_components as dbc
 import pickle
 
@@ -10,48 +10,57 @@ with open('./user_password_dict.pkl', 'rb') as file:
 
 
 ## Dash
-dash.register_page(__name__,name = "Register")
+#dash.register_page(__name__,name = "Register")
+
+register_page(
+    __name__,
+    name='Register',
+    top_nav=True,
+    path='/Register'
+)
 
 
 ########################################################################################################################
 # TAB CONTENT
 ########################################################################################################################
 
-layout = dbc.Container(
-    [
-        dbc.Row(
-            dbc.Col(
-                dbc.Card(
-                    [
-                        dbc.CardHeader("NUEVO USUARIO", className="bg-primary text-white", style={"text-align": "left", "height": "60px", "font-size": "24px", "display": "flex", "align-items": "center"}),
-                        dbc.CardBody(
-                            [
-                                dbc.Input(type="text", id="new-username", placeholder="Username", className="mb-3", style={"height": "50px"}),
-                                html.Div(style={"height": "10px"}),
-                                dbc.Input(type="password", id="new-password", placeholder="Password", className="mb-3", style={"height": "50px"}),
-                                dbc.Button("Registrarse", id="register-button", color="primary", className="mt-3", style={"width": "100%"}),
-                                html.Div("¿Ya tienes una cuenta? Inicia sesión", className="mt-3"),
-                                dcc.ConfirmDialog(id='registration-success-popup', message="Successful registration.", displayed=False),
-                                dcc.ConfirmDialog(id='registration-error-popup', message="Username already exists. Please choose a different username.", displayed=False),
-                            ],
-                            style={"display": "flex", "flex-direction": "column", "align-items": "center", "justify-content": "center"}
-                        ),
-                    ],
-                    className="mb-3",
-                    style={"width": "400px", "height": "450px", "margin": "auto", "text-align": "center"}
-                ),
-                width=6,
-                style={"margin": "auto"}
-            )
-        ),
-    ],
-    fluid=True,
-    style={
-        "padding": "4%",
-        "background-image": "url('path_to_your_image')",  # Reemplaza 'path_to_your_image' con la ruta real de tu imagen
-        "background-size": "cover",
-    }
-)
+def layout():
+    layout = dbc.Container(
+        [
+            dbc.Row(
+                dbc.Col(
+                    dbc.Card(
+                        [
+                            dbc.CardHeader("NUEVO USUARIO", className="bg-primary text-white", style={"text-align": "left", "height": "60px", "font-size": "24px", "display": "flex", "align-items": "center"}),
+                            dbc.CardBody(
+                                [
+                                    dbc.Input(type="text", id="new-username", placeholder="Username", className="mb-3", style={"height": "50px"}),
+                                    html.Div(style={"height": "10px"}),
+                                    dbc.Input(type="password", id="new-password", placeholder="Password", className="mb-3", style={"height": "50px"}),
+                                    dbc.Button("Registrarse", id="register-button", color="primary", className="mt-3", style={"width": "100%"}),
+                                    html.A("¿Ya tienes una cuenta? Inicia sesión", href="/", className="mt-3", style={"text-decoration": "underline"}),
+                                    dcc.ConfirmDialog(id='registration-success-popup', message="Successful registration.", displayed=False),
+                                    dcc.ConfirmDialog(id='registration-error-popup', message="Username already exists. Please choose a different username.", displayed=False),
+                                ],
+                                style={"display": "flex", "flex-direction": "column", "align-items": "center", "justify-content": "center"}
+                            ),
+                        ],
+                        className="mb-3",
+                        style={"width": "400px", "height": "450px", "margin": "auto", "text-align": "center"}
+                    ),
+                    width=6,
+                    style={"margin": "auto"}
+                )
+            ),
+        ],
+        fluid=True,
+        style={
+            "padding": "4%",
+            "background-image": "url('path_to_your_image')",  # Reemplaza 'path_to_your_image' con la ruta real de tu imagen
+            "background-size": "cover",
+        }
+    )
+    return layout
 
 ########################################################################################################################
 # FUNCTIONS

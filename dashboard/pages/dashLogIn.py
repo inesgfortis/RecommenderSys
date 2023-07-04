@@ -1,7 +1,7 @@
 # Libraries
 import pickle
 import dash
-from dash import dcc,html, callback, Input, Output, State, ctx
+from dash import dcc,html, register_page, callback, Input, Output, State, ctx
 import dash_bootstrap_components as dbc
 
 # Load user-password database
@@ -11,49 +11,58 @@ with open('./user_password_dict.pkl', 'rb') as file:
 
 ## Dash
 # Main page
-dash.register_page(__name__, path = "/", name = "Login")
+#dash.register_page(__name__, path = "/", name = "Home")
+
+register_page(
+    __name__,
+    top_nav=True,
+    path='/'
+)
 
 
 ########################################################################################################################
 # TAB CONTENT
 ########################################################################################################################
+def layout():
 
-layout = dbc.Container(
-    [
-        dbc.Row(
-            dbc.Col(
-                dbc.Card(
-                    [
-                        dbc.CardHeader("INICIAR SESIÓN", className="bg-primary text-white", style={"text-align": "left","height": "60px","font-size": "24px","display": "flex", "align-items": "center"}),
-                        dbc.CardBody(
-                            [
-                                dbc.Input(type="text", id="username", placeholder="Username", className="mb-3",style={"height": "50px"}),
-                                html.Div(style={"height": "10px"}),
-                                dbc.Input(type="password", id="password", placeholder="Password", className="mb-3",style={"height": "50px"}),
-                                dbc.Button("Continuar", id="login-button", color="primary", className="mt-3", style={"width": "100%"}),
-                                html.Div("¿Eres nuevo? Crea tu cuenta", className="mt-3"),
-                                dcc.ConfirmDialog(id='username-error-popup', message="User does not exist. Please register.", displayed=False),
-                                dcc.ConfirmDialog(id='password-error-popup', message="Incorrect password. Please try again.", displayed=False),
-                                dcc.ConfirmDialog(id='login-success-popup', message="Successful login.", displayed=False),
-                            ],
-                            style={"display": "flex", "flex-direction": "column", "align-items": "center", "justify-content": "center"}
-                        ),
-                    ],
-                    className="mb-3",
-                    style={"width": "400px", "height": "450px", "margin": "auto", "text-align": "center"}
-                ),
-                width=6,
-                style={"margin": "auto"}
-            )
-        ),
-    ],
-    fluid=True,
-    style={
-        "padding": "4%",
-        "background-image": "url('path_to_your_image')",  # Reemplaza 'path_to_your_image' con la ruta real de tu imagen
-        "background-size": "cover",
-    }
-)
+    layout = dbc.Container(
+        [
+            dbc.Row(
+                dbc.Col(
+                    dbc.Card(
+                        [
+                            dbc.CardHeader("INICIAR SESIÓN", className="bg-primary text-white", style={"text-align": "left","height": "60px","font-size": "24px","display": "flex", "align-items": "center"}),
+                            dbc.CardBody(
+                                [
+                                    dbc.Input(type="text", id="username", placeholder="Username", className="mb-3",style={"height": "50px"}),
+                                    html.Div(style={"height": "10px"}),
+                                    dbc.Input(type="password", id="password", placeholder="Password", className="mb-3",style={"height": "50px"}),
+                                    dbc.Button("Continuar", id="login-button", color="primary", className="mt-3", style={"width": "100%"}),
+                                    #html.Div("¿Eres nuevo? Crea tu cuenta", className="mt-3"),
+                                    html.A("¿Eres nuevo? Crea tu cuenta", href="/Register", className="mt-3", style={"text-decoration": "underline"}),
+                                    dcc.ConfirmDialog(id='username-error-popup', message="User does not exist. Please register.", displayed=False),
+                                    dcc.ConfirmDialog(id='password-error-popup', message="Incorrect password. Please try again.", displayed=False),
+                                    dcc.ConfirmDialog(id='login-success-popup', message="Successful login.", displayed=False),
+                                ],
+                                style={"display": "flex", "flex-direction": "column", "align-items": "center", "justify-content": "center"}
+                            ),
+                        ],
+                        className="mb-3",
+                        style={"width": "400px", "height": "450px", "margin": "auto", "text-align": "center"}
+                    ),
+                    width=6,
+                    style={"margin": "auto"}
+                )
+            ),
+        ],
+        fluid=True,
+        style={
+            "padding": "4%",
+            "background-image": "url('path_to_your_image')",  # Reemplaza 'path_to_your_image' con la ruta real de tu imagen
+            "background-size": "cover",
+        }
+    )
+    return layout
 
 ########################################################################################################################
 # FUNCTIONS
