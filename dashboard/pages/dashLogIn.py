@@ -38,7 +38,6 @@ def layout():
                                     html.Div(style={"height": "10px"}),
                                     dbc.Input(type="password", id="password", placeholder="Password", className="mb-3",style={"height": "50px"}),
                                     dbc.Button("Continuar", id="login-button", color="primary", className="mt-3", style={"width": "100%"}),
-                                    #html.Div("¿Eres nuevo? Crea tu cuenta", className="mt-3"),
                                     html.A("¿Eres nuevo? Crea tu cuenta", href="/Register", className="mt-3", style={"text-decoration": "underline"}),
                                     dcc.ConfirmDialog(id='username-error-popup', message="User does not exist. Please register.", displayed=False),
                                     dcc.ConfirmDialog(id='password-error-popup', message="Incorrect password. Please try again.", displayed=False),
@@ -102,7 +101,10 @@ def handle_login_button(n_clicks, username, password):
 
     # User exists and correct password
     if n_clicks and username in existing_usernames and password == get_password(username):
+        # Redirigir al usuario a la página dashMovies.py después de iniciar sesión correctamente
+        #dcc.Location(pathname='/Recommendations')
         return False, False, True, '', ''
+    
 
     return False, False, False, username, password
 
