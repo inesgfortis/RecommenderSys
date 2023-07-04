@@ -1,11 +1,7 @@
-# Importamos las librerias mínimas necesarias
+# Libraries
 import dash
 from dash import html, callback, Input, Output, State, ctx, dcc
 import dash_bootstrap_components as dbc
-#from dash import redirect
-
-
-#from dash_bootstrap_templates import ThemeSwitchAIO
 
 ## App
 app = dash.Dash(__name__,external_stylesheets=[dbc.themes.JOURNAL], title="TFG", use_pages=True)

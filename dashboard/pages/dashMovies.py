@@ -7,7 +7,7 @@ from dash import dcc
 
 import pickle
 import os
-
+from PIL import Image
 
 
 # Load recommendations
@@ -39,7 +39,7 @@ def get_movie_images(numbers):
         image_path = os.path.join(image_folder, f"{number}.jpg")
         #print(image_path)
         if os.path.isfile(image_path):
-            print("dentro")
+            #print("dentro")
             image = html.Img(src=image_path, style={"width": "110px", "height": "140px", "margin": "10px"})
             images.append(image)
     return images
@@ -63,6 +63,10 @@ layout = dbc.Container(
                         dbc.CardBody(
                             [
                                 dbc.Row(
+                                    # [
+                                    #     html.Img(src='images/1.jpg'),
+                                    #     html.Img(src=dash.get_asset_url('images/1.png')),
+                                    # ]
                                     get_movie_images([1, 2, 3, 4, 5, 6, 7, 8, 9, 10]),
                                     justify="center",
                                     align="center",
