@@ -32,16 +32,27 @@ register_page(
 ########################################################################################################################
 
 # Function to get movie images by number
+# def get_movie_images(numbers):
+#     image_folder = "images/"
+#     images = []
+#     for number in numbers:
+#         image_path = os.path.join(image_folder, f"{number}.jpg")
+#         #print(image_path)
+#         if os.path.isfile(image_path):
+#             #print("dentro")
+#             image = html.Img(src=image_path, style={"width": "110px", "height": "140px", "margin": "10px"})
+#             images.append(image)
+#     return images
+
+# Function to get movie images by number
 def get_movie_images(numbers):
-    image_folder = "images/"
+    #image_folder = "images/"
     images = []
     for number in numbers:
-        image_path = os.path.join(image_folder, f"{number}.jpg")
-        #print(image_path)
-        if os.path.isfile(image_path):
-            #print("dentro")
-            image = html.Img(src=image_path, style={"width": "110px", "height": "140px", "margin": "10px"})
-            images.append(image)
+        image_path = f"{number}.jpg"
+        #image = html.Img(src=image_path, style={"width": "110px", "height": "140px", "margin": "10px"})
+        image = html.Img(src=dash.get_asset_url(image_path), style={"width": "110px", "height": "140px", "margin": "10px"})
+        images.append(image)
     return images
 
 
