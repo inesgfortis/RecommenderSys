@@ -32,25 +32,10 @@ register_page(
 ########################################################################################################################
 
 # Function to get movie images by number
-# def get_movie_images(numbers):
-#     image_folder = "images/"
-#     images = []
-#     for number in numbers:
-#         image_path = os.path.join(image_folder, f"{number}.jpg")
-#         #print(image_path)
-#         if os.path.isfile(image_path):
-#             #print("dentro")
-#             image = html.Img(src=image_path, style={"width": "110px", "height": "140px", "margin": "10px"})
-#             images.append(image)
-#     return images
-
-# Function to get movie images by number
 def get_movie_images(numbers):
-    #image_folder = "images/"
     images = []
     for number in numbers:
         image_path = f"{number}.jpg"
-        #image = html.Img(src=image_path, style={"width": "110px", "height": "140px", "margin": "10px"})
         image = html.Img(src=dash.get_asset_url(image_path), style={"width": "110px", "height": "140px", "margin": "10px"})
         images.append(image)
     return images
@@ -74,10 +59,36 @@ layout = dbc.Container(
                         dbc.CardBody(
                             [
                                 dbc.Row(
-                                    # [
-                                    #     html.Img(src='images/1.jpg'),
-                                    #     html.Img(src=dash.get_asset_url('images/1.png')),
-                                    # ]
+                                    get_movie_images([1, 2, 3, 4, 5, 6, 7, 8, 9, 10]),
+                                    justify="center",
+                                    align="center",
+                                    className="mb-3",
+                                ),
+                            ],
+                        ),
+                        dbc.CardHeader(
+                            "Películas que te han gustado",
+                            className="bg-primary text-white",
+                            style={"text-align": "center", "font-size": "24px"},
+                        ),
+                        dbc.CardBody(
+                            [
+                                dbc.Row(
+                                    get_movie_images([1, 2, 3, 4, 5, 6, 7, 8, 9, 10]),
+                                    justify="center",
+                                    align="center",
+                                    className="mb-3",
+                                ),
+                            ],
+                        ),
+                        dbc.CardHeader(
+                            "Películas valoradas negativamente",
+                            className="bg-primary text-white",
+                            style={"text-align": "center", "font-size": "24px"},
+                        ),
+                        dbc.CardBody(
+                            [
+                                dbc.Row(
                                     get_movie_images([1, 2, 3, 4, 5, 6, 7, 8, 9, 10]),
                                     justify="center",
                                     align="center",
@@ -88,9 +99,12 @@ layout = dbc.Container(
                     
                     ],
                     style={"width": "1400px", "margin": "auto"},
-                )
-            )
+                ),
+            ),
         ),
+        html.Div(style={"height": "10px"}),
+        dbc.Button("Cerrar sesión", id="logout-button", color="secondary", className="mt-3", style={"width": "10%"}),
+        dcc.Location(id='url', refresh=False),
     ],
     fluid=True,
     style={"padding": "4%"},

@@ -30,27 +30,30 @@ register_page(
 def generar_preguntas():
     preguntas = []
     
-    for i, pelicula in enumerate(top_movies_dict.values()):
+    #for i, pelicula in enumerate(top_movies_dict.values()):
+    for i, (movieId, pelicula) in enumerate(top_movies_dict.items()):
         if i % 5 == 0:
             fila_preguntas = []
         
+        image_path = f"{movieId}.jpg"        
         pregunta = dbc.Col(
             dbc.Card(
                 [
                     dbc.CardHeader(html.H4(pelicula, style={"font-size": "14px"})),
                     dbc.CardBody(
-                        dcc.Slider(
-                            id="range-slider-"+str(i+1),
-                            min=0,
-                            max=5,
-                            step=0.5,
-                            value=0,
-                            marks={i: str(i) for i in range(6)}
-                        )
+                        [
+                            html.Img(src=dash.get_asset_url(image_path), style={"width": "120px", "height": "150px","margin-left": "auto", "margin-right": "auto", "display": "block"}),
+                            html.Div(style={"height": "15px"}),
+                            dcc.Slider(
+                                id="range-slider-"+str(i+1),
+                                min=0,
+                                max=5,
+                                step=0.5,
+                                value=0,
+                                marks={i: str(i) for i in range(6)}
+                            ),
+                        ],
                     ),
-                    # dbc.CardFooter(
-                    #     dbc.Button("Guardar", id={"type": "guardar-button", "index": i}, color="primary", className="mr-1")
-                    # )
                 ],
                 className="col",
                 style={"margin-bottom": "20px"}
@@ -72,7 +75,7 @@ def generar_preguntas():
 ########################################################################################################################
 
 def layout():
-    layout = dbc.Container(
+    layout = dbc.Container([
         dbc.Card(
             [
                 dbc.CardHeader("Cuestionario", className="bg-primary text-white"),
@@ -80,15 +83,16 @@ def layout():
                     generar_preguntas()
                 ),
                 dbc.CardFooter(
-                    dbc.Button("Listo", id="listo-button", color="primary", className="mr-1")
-                ),
-                dbc.CardFooter(
-                    html.Div(id="output-dictionary")  # Agregar un componente para mostrar la salida del diccionario
+                    [
+                        dbc.Button("Listo", id="listo-button", color="primary", className="mr-1"),
+                        html.Div(id="output-dictionary")  # Agregar un componente para mostrar la salida del diccionario
+                    ]
                 ),
             ],
             className="mt-4"
-        )
-    )
+        ),
+        html.Div(style={"height": "30px"}),
+    ])
     return layout
 
 
