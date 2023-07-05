@@ -86,10 +86,10 @@ def add_new_user(valores_slider):
     new_ratings['userId'] = userId
     new_ratings['timestamp'] = timestamp
 
-    # Reorder the columns in `df_new_ratings` to match the order of the existing DataFrame
+    # Reorder the columns in new_ratings to match the order of the ratings DataFrame
     new_ratings = new_ratings.reindex(columns=ratings.columns)
     
-    # Concatenate the `ratings` DataFrame and `df_new_ratings` to add the new lines at the end
+    # Concatenate the ratings DataFrame and new_ratings to add the new lines at the end
     ratings = pd.concat([ratings, new_ratings], ignore_index=True)
     
     # Save the updated file
@@ -105,7 +105,7 @@ def layout():
     layout = dbc.Container([
         dbc.Card(
             [
-                dbc.CardHeader("Cuestionario", className="bg-primary text-white"),
+                dbc.CardHeader("Ayúdanos a conocer tus gustos", className="bg-primary text-white"),
                 dbc.CardBody(
                     generar_preguntas()
                 ),
@@ -138,10 +138,11 @@ def guardar_valores_sliders(n_clicks, *slider_values):
     if n_clicks:
         valores_slider = {movieIds[i]: value for i, value in enumerate(slider_values)}
         print(valores_slider)
+        add_new_user(valores_slider)
         # with open('valores_slider.pkl', 'wb') as archivo:
         #     pickle.dump(valores_slider, archivo)
     
-    add_new_user(valores_slider)
+
     return ""
 
 
