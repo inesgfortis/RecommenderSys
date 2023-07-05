@@ -3,6 +3,7 @@ import dash
 from dash import html, register_page, callback, Input, Output, dcc, ctx, State
 import dash_bootstrap_components as dbc
 import pickle
+import time
 
 
 # Load movies
@@ -68,6 +69,32 @@ def generar_preguntas():
     
     return preguntas
 
+# Funtion to save the data introduced by the new user
+def add_new_user(valores_slider):
+    # Load new users' info
+    # with open('../dashboard/valores_slider.pkl', 'rb') as file:
+    #     valores_slider = pickle.load(file)
+        
+    #ratings = pd.read_csv('ratings.csv')
+    userId = ratings['userId'].max()+1
+    timestamp = int(time.time())
+    
+    # Add the slider information to the ratings dataframe
+    new_ratings = pd.DataFrame.from_dict(valores_slider, orient='index', columns=['rating'])
+    new_ratings.index.name = 'movieId'
+    new_ratings = new_ratings.reset_index()
+    new_ratings['userId'] = userId
+    new_ratings['timestamp'] = timestamp
+
+    # Reorder the columns in `df_new_ratings` to match the order of the existing DataFrame
+    new_ratings = new_ratings.reindex(columns=ratings.columns)
+    
+    # Concatenate the `ratings` DataFrame and `df_new_ratings` to add the new lines at the end
+    ratings = pd.concat([ratings, new_ratings], ignore_index=True)
+    
+    # Save the updated file
+    ratings.to_csv('ratings.csv', index=False)
+
 
 
 ########################################################################################################################
@@ -107,12 +134,14 @@ def layout():
     [State("range-slider-" + str(i+1), "value") for i in range(len(top_movies_dict.values()))]
 )
 def guardar_valores_sliders(n_clicks, *slider_values):
+    movieIds = list(top_movies_dict.keys())
     if n_clicks:
-        valores_slider = {i+1: value for i, value in enumerate(slider_values)}
-        print("dentro")
-        with open('valores_slider.pkl', 'wb') as archivo:
-            pickle.dump(valores_slider, archivo)
+        valores_slider = {movieIds[i]: value for i, value in enumerate(slider_values)}
+        print(valores_slider)
+        # with open('valores_slider.pkl', 'wb') as archivo:
+        #     pickle.dump(valores_slider, archivo)
     
+    add_new_user(valores_slider)
     return ""
 
 
