@@ -1,14 +1,9 @@
-# Importamos las librerias mínimas necesarias
+# Libraries
 import dash
 from dash import html, register_page
 import dash_bootstrap_components as dbc
-
-from dash import dcc
-
 import pickle
-import os
-from PIL import Image
-
+import pandas as pd
 
 # Load recommendations
 with open('name_to_movieId.pkl', 'rb') as file:
@@ -18,6 +13,12 @@ with open('name_to_movieId.pkl', 'rb') as file:
 with open('recommendations.pkl', 'rb') as file:
     recommendations = pickle.load(file)
 
+ratings = pd.read_csv('ratings.csv')
+
+# ---------------------------------------------------- #
+# PENDIENTE: leer el userId en lugar de ponerlo a puño #
+# ---------------------------------------------------- #
+userId = 1
 
 ## Dash
 register_page(
@@ -31,16 +32,8 @@ register_page(
 # FUNCTIONS
 ########################################################################################################################
 
-# Function to get movie images by number
-# def get_movie_images(numbers):
-#     images = []
-#     for number in numbers:
-#         image_path = f"{number}.jpg"
-#         image = html.Img(src=dash.get_asset_url(image_path), style={"width": "110px", "height": "140px", "margin": "10px"})
-#         images.append(image)
-#     return images
-
-def get_movie_images(userId):
+# Function to get the movie images associated with the recommendations for a given user
+def get_recommendation_images(userId):
 
     numbers = [item[0] for item in recommendations[userId]]
     images = []
@@ -50,6 +43,30 @@ def get_movie_images(userId):
         images.append(image)
     return images
 
+
+def get_user_preferences(userId, k, like=True):
+
+    # Filter ratings for the specified userId and sort movies by rating in descending order
+    user_ratings = ratings[ratings['userId'] == userId].copy()
+    sorted_movies = user_ratings.sort_values(by='rating', ascending=False)
+    
+    # Get the top k movies with highest ratings
+    if like:
+        movieIds = list(sorted_movies.head(k).copy()['movieId'])
+    # Get the top k movies with lowest ratings
+    else:
+        movieIds = list(sorted_movies.tail(k).copy()['movieId'])
+
+    return movieIds
+
+
+def get_movie_images(numbers):
+    images = []
+    for number in numbers:
+        image_path = f"{number}.jpg"
+        image = html.Img(src=dash.get_asset_url(image_path), style={"width": "110px", "height": "140px", "margin": "10px"})
+        images.append(image)
+    return images
 
 
 ########################################################################################################################
@@ -70,8 +87,7 @@ layout = dbc.Container(
                         dbc.CardBody(
                             [
                                 dbc.Row(
-                                    # PENDIENTE: leer el userId en lugar de ponerlo a puño
-                                    get_movie_images(1),
+                                    get_recommendation_images(userId),
                                     justify="center",
                                     align="center",
                                     className="mb-3",
@@ -86,7 +102,7 @@ layout = dbc.Container(
                         dbc.CardBody(
                             [
                                 dbc.Row(
-                                    get_movie_images(1),
+                                    get_movie_images(get_user_preferences(userId,10)),
                                     justify="center",
                                     align="center",
                                     className="mb-3",
@@ -101,7 +117,7 @@ layout = dbc.Container(
                         dbc.CardBody(
                             [
                                 dbc.Row(
-                                    get_movie_images(1),
+                                    get_movie_images(get_user_preferences(userId,10,False)),
                                     justify="center",
                                     align="center",
                                     className="mb-3",
