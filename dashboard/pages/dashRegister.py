@@ -1,5 +1,4 @@
 # Libraries
-import dash
 from dash import dcc,html, register_page, callback, Input, Output, State, ctx
 import dash_bootstrap_components as dbc
 import pickle
@@ -8,17 +7,13 @@ import pickle
 with open('./user_password_dict.pkl', 'rb') as file:
     user_password_dict = pickle.load(file)
 
-
 ## Dash
-#dash.register_page(__name__,name = "Register")
-
 register_page(
     __name__,
     name='Register',
     top_nav=True,
     path='/Register'
 )
-
 
 ########################################################################################################################
 # TAB CONTENT
@@ -40,7 +35,6 @@ def layout():
                                     html.Div(id="hidden_div_for_redirect_callback_2"),
                                     dbc.Button("Registrarse", id="register-button", color="primary", className="mt-3", style={"width": "100%"}),
                                     html.A("¿Ya tienes una cuenta? Inicia sesión", href="/", className="mt-3", style={"text-decoration": "underline"}),
-                                    #dcc.ConfirmDialog(id='registration-success-popup', message="Successful registration.", displayed=False),
                                     dcc.ConfirmDialog(id='registration-error-popup', message="Username already exists. Please choose a different username.", displayed=False),
                                 ],
                                 style={"display": "flex", "flex-direction": "column", "align-items": "center", "justify-content": "center"}
@@ -88,10 +82,9 @@ def add_new_user(username, password):
 ########################################################################################################################
 
 @callback(
-    #Output('registration-success-popup', 'displayed'),
     Output('registration-error-popup', 'displayed'),
-    Output('new-username', 'value'),  # Agrega esta salida para borrar el contenido del campo de entrada del nombre de usuario
-    Output('new-password', 'value'),  # Agrega esta salida para borrar el contenido del campo de entrada de la contraseña
+    Output('new-username', 'value'),
+    Output('new-password', 'value'),
     Output("hidden_div_for_redirect_callback_2", "children"),
     [Input('register-button', 'n_clicks')],
     [State('new-username', 'value'), State('new-password', 'value')]

@@ -9,10 +9,7 @@ with open('./user_password_dict.pkl', 'rb') as file:
     user_password_dict = pickle.load(file)
 
 
-## Dash
-# Main page
-#dash.register_page(__name__, path = "/", name = "Home")
-
+## Dash Main page
 register_page(
     __name__,
     top_nav=True,
@@ -73,49 +70,9 @@ def get_password(username):
             return user_info['password']
     return None
 
-
 ########################################################################################################################
 # CALLBACKS
 ########################################################################################################################
-
-# # Login button (continuar)
-# @callback(
-#     Output('username-error-popup', 'displayed'),
-#     Output('password-error-popup', 'displayed'),
-#     Output('username', 'value'),  # Agrega esta salida para borrar el contenido del campo de entrada del nombre de usuario
-#     Output('password', 'value'),  # Agrega esta salida para borrar el contenido del campo de entrada de la contraseña
-#     [Input('login-button', 'n_clicks')],
-#     [State('username', 'value'), State('password', 'value')]
-# )
-# def handle_login_button(n_clicks, username, password):
-#     existing_usernames = [user['user'] for user in user_password_dict.values()]
-
-#     # User does not exist
-#     if n_clicks and username not in existing_usernames:
-#         return True, False, '', ''
-
-#     # User exists but incorrect password
-#     if n_clicks and username in existing_usernames and password != get_password(username):
-#         return False, True, username, ''
-
-    
-#     return False, False, username, password
-
-
-
-# @callback(
-#     Output("hidden_div_for_redirect_callback", "children"),
-#     [Input('login-button', 'n_clicks')],
-#     [State('username', 'value'), State('password', 'value')]
-# )
-# def login_user_(n_clicks, username, password):
-#     existing_usernames = [user['user'] for user in user_password_dict.values()]
-#     # User exists and correct password
-#     if n_clicks and username in existing_usernames and password == get_password(username):
-#         return dcc.Location(pathname="/Recommendations", id="redirect-to-recs")
-#     else:
-#         print("Some error has ocurred")
-
 
 @callback(
     Output('username-error-popup', 'displayed'),
@@ -142,8 +99,6 @@ def handle_login_button(n_clicks, username, password):
         return False, False, username, password, dcc.Location(pathname="/Recommendations", id="redirect-to-recs")
 
     return False, False, username, password, None
-
-
 
 ########################################################################################################################
 ########################################################################################################################

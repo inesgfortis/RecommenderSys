@@ -62,18 +62,9 @@ def get_user_preferences(userId, k, like=True):
     return movieIds
 
 
-# def get_movie_images(numbers):
-#     images = []
-#     for number in numbers:
-#         image_path = f"{number}.jpg"
-#         image = html.Img(src=dash.get_asset_url(image_path), style={"width": "110px", "height": "140px", "margin": "10px"})
-#         images.append(image)
-#     return images
-
-
-import os
-paths_img = os.listdir("./assets")  #Aquí iría la ruta de las imágenes y en teoría devuelve una lista de los objetos dentro de la carpeta, por ejemplo: ["20.jpg","25.jpg",...]
-num_images = [int(path.split(".")[0]) for path in paths_img] # Esto deberia devolver una lista de todos los números de imágenes que tienes en la carpeta [20,25,...]
+# Load movie images
+paths_img = os.listdir("./assets")
+num_images = [int(path.split(".")[0]) for path in paths_img]
 
 def get_movie_images(numbers):
     images = []
@@ -86,21 +77,6 @@ def get_movie_images(numbers):
         images.append(image)
     
     return images
-
-
-
-# def get_movie_images(numbers):
-#     images = []
-#     for number in numbers:
-#         image_path = f"{number}.jpg"
-#         try:
-#             image = html.Img(src=dash.get_asset_url(image_path), style={"width": "110px", "height": "140px", "margin": "10px"})
-#         except:
-#             image_path = "0.jpg"
-#             image = html.Img(src=dash.get_asset_url(image_path), style={"width": "110px", "height": "140px", "margin": "10px"})
-#         images.append(image)
-#     return images
-
 
 
 ########################################################################################################################
@@ -136,8 +112,7 @@ layout = dbc.Container(
                         dbc.CardBody(
                             [
                                 dbc.Row(
-                                    #get_movie_images(get_user_preferences(userId,10)),
-                                    get_movie_images([0,1,2,3,4,5,91]),
+                                    get_movie_images(get_user_preferences(userId,10)),
                                     justify="center",
                                     align="center",
                                     className="mb-3",
