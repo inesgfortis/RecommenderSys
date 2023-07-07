@@ -111,7 +111,9 @@ def layout():
                 ),
                 dbc.CardFooter(
                     [
-                        dbc.Button("Listo", id="listo-button", color="primary", className="mr-1"),
+                        #dcc.Link(html.Button("Ir a la página de inicio de sesión"), href="/inicio-sesion"),
+                        dcc.Link(dbc.Button("Listo", id="listo-button", color="primary", className="mr-1"), href="/Recommendations"),
+                        #dbc.Button("Listo", id="listo-button", color="primary", className="mr-1"),
                         html.Div(id="output-dictionary")  # Agregar un componente para mostrar la salida del diccionario
                     ]
                 ),
