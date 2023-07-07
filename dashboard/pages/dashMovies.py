@@ -1,6 +1,6 @@
 # Libraries
 import dash
-from dash import html, register_page
+from dash import html, register_page, callback, Input, Output, dcc, ctx, State
 import dash_bootstrap_components as dbc
 import pickle
 import pandas as pd
@@ -148,6 +148,7 @@ layout = dbc.Container(
             ),
         ),
         html.Div(style={"height": "10px"}),
+        html.Div(id="hidden_div_to_end_session"),
         dbc.Button("Cerrar sesión", id="logout-button", color="secondary", className="mt-3", style={"width": "10%"}),
 
     ],
@@ -160,8 +161,14 @@ layout = dbc.Container(
 # CALLBACKS
 ########################################################################################################################
 
-
-
+@callback(
+    Output("hidden_div_to_end_session", "children"),
+    Input("logout-button", "n_clicks")
+)
+def end_session(n_clicks):
+    if n_clicks:
+        return dcc.Location(pathname="/", id="redirect-to-home")
+    return None
 
 
 ########################################################################################################################

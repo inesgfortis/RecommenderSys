@@ -28,7 +28,7 @@ register_page(
 # FUNCTIONS
 ########################################################################################################################
 
-def generar_preguntas():
+def add_movies():
     preguntas = []
     
     #for i, pelicula in enumerate(top_movies_dict.values()):
@@ -107,14 +107,12 @@ def layout():
             [
                 dbc.CardHeader("Ayúdanos a conocer tus gustos", className="bg-primary text-white"),
                 dbc.CardBody(
-                    generar_preguntas()
+                    add_movies()
                 ),
                 dbc.CardFooter(
                     [
-                        #dcc.Link(html.Button("Ir a la página de inicio de sesión"), href="/inicio-sesion"),
+                        html.Div(id="hidden_div_for_redirect_callback_quiz"),
                         dcc.Link(dbc.Button("Listo", id="listo-button", color="primary", className="mr-1"), href="/Recommendations"),
-                        #dbc.Button("Listo", id="listo-button", color="primary", className="mr-1"),
-                        html.Div(id="output-dictionary")  # Agregar un componente para mostrar la salida del diccionario
                     ]
                 ),
             ],
@@ -131,11 +129,11 @@ def layout():
 ########################################################################################################################
 
 @callback(
-    Output("output-dictionary", "children"),  # Agrega un componente de salida ficticio
+    Output("hidden_div_for_redirect_callback_quiz", "children"),
     Input("listo-button", "n_clicks"),
     [State("range-slider-" + str(i+1), "value") for i in range(len(top_movies_dict.values()))]
 )
-def guardar_valores_sliders(n_clicks, *slider_values):
+def save_slider_values(n_clicks, *slider_values):
     movieIds = list(top_movies_dict.keys())
     if n_clicks:
         valores_slider = {movieIds[i]: value for i, value in enumerate(slider_values)}
@@ -144,7 +142,9 @@ def guardar_valores_sliders(n_clicks, *slider_values):
         # with open('valores_slider.pkl', 'wb') as archivo:
         #     pickle.dump(valores_slider, archivo)
 
-    return ""
+        return dcc.Location(pathname="/Recommendations", id="redirect-to-recs-new-user")
+
+    return None
 
 
 # @callback(

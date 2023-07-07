@@ -37,9 +37,10 @@ def layout():
                                     dbc.Input(type="text", id="new-username", placeholder="Username", className="mb-3", style={"height": "50px"}),
                                     html.Div(style={"height": "10px"}),
                                     dbc.Input(type="password", id="new-password", placeholder="Password", className="mb-3", style={"height": "50px"}),
+                                    html.Div(id="hidden_div_for_redirect_callback_2"),
                                     dbc.Button("Registrarse", id="register-button", color="primary", className="mt-3", style={"width": "100%"}),
                                     html.A("¿Ya tienes una cuenta? Inicia sesión", href="/", className="mt-3", style={"text-decoration": "underline"}),
-                                    dcc.ConfirmDialog(id='registration-success-popup', message="Successful registration.", displayed=False),
+                                    #dcc.ConfirmDialog(id='registration-success-popup', message="Successful registration.", displayed=False),
                                     dcc.ConfirmDialog(id='registration-error-popup', message="Username already exists. Please choose a different username.", displayed=False),
                                 ],
                                 style={"display": "flex", "flex-direction": "column", "align-items": "center", "justify-content": "center"}
@@ -87,23 +88,24 @@ def add_new_user(username, password):
 ########################################################################################################################
 
 @callback(
-    Output('registration-success-popup', 'displayed'),
+    #Output('registration-success-popup', 'displayed'),
     Output('registration-error-popup', 'displayed'),
     Output('new-username', 'value'),  # Agrega esta salida para borrar el contenido del campo de entrada del nombre de usuario
     Output('new-password', 'value'),  # Agrega esta salida para borrar el contenido del campo de entrada de la contraseña
+    Output("hidden_div_for_redirect_callback_2", "children"),
     [Input('register-button', 'n_clicks')],
     [State('new-username', 'value'), State('new-password', 'value')]
 )
 def handle_register_button(n_clicks, username, password):
     if n_clicks and username and password:
         if existing_username(username):
-            return False, True, '', ''
+            return True, '', '',None
         else:
             # Add the new user to the database
             add_new_user(username,password)
-            return True, False, '', ''
+            return False, '', '', dcc.Location(pathname="/Quiz", id="redirect-to-quiz")
 
-    return False, False, username, password
+    return False, username, password, None
 
 
 ########################################################################################################################

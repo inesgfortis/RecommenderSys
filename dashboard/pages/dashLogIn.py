@@ -37,11 +37,11 @@ def layout():
                                     dbc.Input(type="text", id="username", placeholder="Username", className="mb-3",style={"height": "50px"}),
                                     html.Div(style={"height": "10px"}),
                                     dbc.Input(type="password", id="password", placeholder="Password", className="mb-3",style={"height": "50px"}),
+                                    html.Div(id="hidden_div_for_redirect_callback"),
                                     dbc.Button("Continuar", id="login-button", color="primary", className="mt-3", style={"width": "100%"}),
                                     html.A("¿Eres nuevo? Crea tu cuenta", href="/Register", className="mt-3", style={"text-decoration": "underline"}),
                                     dcc.ConfirmDialog(id='username-error-popup', message="User does not exist. Please register.", displayed=False),
                                     dcc.ConfirmDialog(id='password-error-popup', message="Incorrect password. Please try again.", displayed=False),
-                                    dcc.ConfirmDialog(id='login-success-popup', message="Successful login.", displayed=False),
                                 ],
                                 style={"display": "flex", "flex-direction": "column", "align-items": "center", "justify-content": "center"}
                             ),
@@ -78,13 +78,51 @@ def get_password(username):
 # CALLBACKS
 ########################################################################################################################
 
-# Login button (continuar)
+# # Login button (continuar)
+# @callback(
+#     Output('username-error-popup', 'displayed'),
+#     Output('password-error-popup', 'displayed'),
+#     Output('username', 'value'),  # Agrega esta salida para borrar el contenido del campo de entrada del nombre de usuario
+#     Output('password', 'value'),  # Agrega esta salida para borrar el contenido del campo de entrada de la contraseña
+#     [Input('login-button', 'n_clicks')],
+#     [State('username', 'value'), State('password', 'value')]
+# )
+# def handle_login_button(n_clicks, username, password):
+#     existing_usernames = [user['user'] for user in user_password_dict.values()]
+
+#     # User does not exist
+#     if n_clicks and username not in existing_usernames:
+#         return True, False, '', ''
+
+#     # User exists but incorrect password
+#     if n_clicks and username in existing_usernames and password != get_password(username):
+#         return False, True, username, ''
+
+    
+#     return False, False, username, password
+
+
+
+# @callback(
+#     Output("hidden_div_for_redirect_callback", "children"),
+#     [Input('login-button', 'n_clicks')],
+#     [State('username', 'value'), State('password', 'value')]
+# )
+# def login_user_(n_clicks, username, password):
+#     existing_usernames = [user['user'] for user in user_password_dict.values()]
+#     # User exists and correct password
+#     if n_clicks and username in existing_usernames and password == get_password(username):
+#         return dcc.Location(pathname="/Recommendations", id="redirect-to-recs")
+#     else:
+#         print("Some error has ocurred")
+
+
 @callback(
     Output('username-error-popup', 'displayed'),
     Output('password-error-popup', 'displayed'),
-    Output('login-success-popup', 'displayed'),
-    Output('username', 'value'),  # Agrega esta salida para borrar el contenido del campo de entrada del nombre de usuario
-    Output('password', 'value'),  # Agrega esta salida para borrar el contenido del campo de entrada de la contraseña
+    Output('username', 'value'),
+    Output('password', 'value'),
+    Output("hidden_div_for_redirect_callback", "children"),
     [Input('login-button', 'n_clicks')],
     [State('username', 'value'), State('password', 'value')]
 )
@@ -93,20 +131,18 @@ def handle_login_button(n_clicks, username, password):
 
     # User does not exist
     if n_clicks and username not in existing_usernames:
-        return True, False, False, '', ''
+        return True, False, '', '', None
 
     # User exists but incorrect password
     if n_clicks and username in existing_usernames and password != get_password(username):
-        return False, True, False, username, ''
+        return False, True, username, '', None
 
     # User exists and correct password
     if n_clicks and username in existing_usernames and password == get_password(username):
-        # Redirigir al usuario a la página dashMovies.py después de iniciar sesión correctamente
-        #dcc.Location(pathname='/Recommendations')
-        return False, False, True, '', ''
-    
+        return False, False, username, password, dcc.Location(pathname="/Recommendations", id="redirect-to-recs")
 
-    return False, False, False, username, password
+    return False, False, username, password, None
+
 
 
 ########################################################################################################################
