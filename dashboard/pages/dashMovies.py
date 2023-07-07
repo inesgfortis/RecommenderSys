@@ -69,7 +69,6 @@ def get_movie_images(numbers):
         images.append(image)
     return images
 
-# import traceback
 
 # def get_movie_images(numbers):
 #     images = []
@@ -77,12 +76,12 @@ def get_movie_images(numbers):
 #         image_path = f"{number}.jpg"
 #         try:
 #             image = html.Img(src=dash.get_asset_url(image_path), style={"width": "110px", "height": "140px", "margin": "10px"})
-#         except Exception as e:
-#             traceback.print_exc()  # Imprimir la excepción
+#         except:
 #             image_path = "0.jpg"
 #             image = html.Img(src=dash.get_asset_url(image_path), style={"width": "110px", "height": "140px", "margin": "10px"})
 #         images.append(image)
 #     return images
+
 
 
 ########################################################################################################################
