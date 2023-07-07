@@ -13,7 +13,7 @@ with open('top_movies_dict.pkl', 'rb') as file:
 with open('./name_to_movieID.pkl', 'rb') as file:
     name_to_movieID = pickle.load(file)
 
-ratings = pd.read_csv('ratings.csv')
+# ratings = pd.read_csv('ratings.csv')
 
 ## Dash
 register_page(
@@ -75,7 +75,7 @@ def add_new_user(valores_slider):
     # with open('../dashboard/valores_slider.pkl', 'rb') as file:
     #     valores_slider = pickle.load(file)
         
-    #ratings = pd.read_csv('ratings.csv')
+    ratings = pd.read_csv('ratings.csv')
     userId = ratings['userId'].max()+1
     timestamp = int(time.time())
     
@@ -141,10 +141,17 @@ def guardar_valores_sliders(n_clicks, *slider_values):
         add_new_user(valores_slider)
         # with open('valores_slider.pkl', 'wb') as archivo:
         #     pickle.dump(valores_slider, archivo)
-    
 
     return ""
 
+
+# @callback(
+#     Output('url', 'pathname'),
+#     Input('listo-button', 'n_clicks')
+# )
+# def redirect_to_movies_page(n_clicks):
+#     if n_clicks:
+#         return '/Recommendations'
 
 
 

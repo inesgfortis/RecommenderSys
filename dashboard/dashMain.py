@@ -3,6 +3,8 @@ import dash
 from dash import html, callback, Input, Output, State, ctx, dcc
 import dash_bootstrap_components as dbc
 
+#from pages import dashLogin, dashRegister, dashQuiz, dashMovies
+
 ## App
 app = dash.Dash(__name__,external_stylesheets=[dbc.themes.JOURNAL], title="TFG", use_pages=True)
 
@@ -37,6 +39,9 @@ app.layout = dbc.Container(
 
         html.Div(dash.page_container),
 
+        # dcc.Location(id='url', refresh=False),
+        # html.Div(id='page-content')
+
     ], fluid = True)
 
 
@@ -52,6 +57,20 @@ app.layout = dbc.Container(
 #     if n_clicks:
 #         # Redirige a la página de inicio de sesión
 #         return '/'
+
+# @app.callback(Output('page-content', 'children'),
+#               Input('url', 'pathname'))
+# def render_page_content(pathname):
+#     if pathname == '/':
+#         return dashLogin.layout
+#     elif pathname == '/Register':
+#         return dashRegister.layout
+#     elif pathname == '/Quiz':
+#         return dashQuiz.layout
+#     elif pathname == '/Recommendations':
+#         return dashMovies.layout
+#     else:
+#         return dbc.Alert("Página no encontrada.", color="danger")
 
 
 ########################################################################################################################
