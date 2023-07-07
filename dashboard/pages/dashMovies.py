@@ -4,6 +4,7 @@ from dash import html, register_page
 import dash_bootstrap_components as dbc
 import pickle
 import pandas as pd
+import os
 
 # Load recommendations
 with open('name_to_movieId.pkl', 'rb') as file:
@@ -68,6 +69,21 @@ def get_movie_images(numbers):
         images.append(image)
     return images
 
+# import traceback
+
+# def get_movie_images(numbers):
+#     images = []
+#     for number in numbers:
+#         image_path = f"{number}.jpg"
+#         try:
+#             image = html.Img(src=dash.get_asset_url(image_path), style={"width": "110px", "height": "140px", "margin": "10px"})
+#         except Exception as e:
+#             traceback.print_exc()  # Imprimir la excepción
+#             image_path = "0.jpg"
+#             image = html.Img(src=dash.get_asset_url(image_path), style={"width": "110px", "height": "140px", "margin": "10px"})
+#         images.append(image)
+#     return images
+
 
 ########################################################################################################################
 # TAB CONTENT
@@ -80,9 +96,9 @@ layout = dbc.Container(
                 dbc.Card(
                     [
                         dbc.CardHeader(
-                            "Recomendaciones",
+                            "Películas que creemos que podrían gustarte",
                             className="bg-primary text-white",
-                            style={"text-align": "center", "font-size": "24px"},
+                            style={"text-align": "left", "font-size": "24px"},
                         ),
                         dbc.CardBody(
                             [
@@ -95,14 +111,15 @@ layout = dbc.Container(
                             ],
                         ),
                         dbc.CardHeader(
-                            "Películas que te han gustado",
+                            "en base a aquellas películas que has disfrutado",
                             className="bg-primary text-white",
-                            style={"text-align": "center", "font-size": "24px"},
+                            style={"text-align": "left", "font-size": "24px"},
                         ),
                         dbc.CardBody(
                             [
                                 dbc.Row(
-                                    get_movie_images(get_user_preferences(userId,10)),
+                                    #get_movie_images(get_user_preferences(userId,10)),
+                                    get_movie_images([0,1,2,3,4,5,91]),
                                     justify="center",
                                     align="center",
                                     className="mb-3",
@@ -110,9 +127,9 @@ layout = dbc.Container(
                             ],
                         ),
                         dbc.CardHeader(
-                            "Películas valoradas negativamente",
+                            "y aquellas que no te han gustado tanto",
                             className="bg-primary text-white",
-                            style={"text-align": "center", "font-size": "24px"},
+                            style={"text-align": "left", "font-size": "24px"},
                         ),
                         dbc.CardBody(
                             [
