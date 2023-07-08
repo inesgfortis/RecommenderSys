@@ -22,7 +22,6 @@ register_page(
 # TAB CONTENT
 ########################################################################################################################
 def layout():
-
     layout = dbc.Container(
         [
             dbc.Row(
@@ -48,18 +47,21 @@ def layout():
                         style={"width": "400px", "height": "450px", "margin": "auto", "text-align": "center"}
                     ),
                     width=6,
-                    style={"margin": "auto"}
+                    style={"margin": "auto", "position": "absolute", "top": "50%", "left": "50%", "transform": "translate(-50%, -50%)"}
                 )
             ),
         ],
         fluid=True,
         style={
-            "padding": "4%",
-            "background-image": "url('path_to_your_image')",  # Reemplaza 'path_to_your_image' con la ruta real de tu imagen
+            #"padding": "4%",
+            "background-image":'url("/assets/-2.jpg")',
             "background-size": "cover",
+            "height": "100vh",  # Set the height of the container to 100% viewport height
+            "width": "100vw"
         }
     )
     return layout
+
 
 ########################################################################################################################
 # FUNCTIONS

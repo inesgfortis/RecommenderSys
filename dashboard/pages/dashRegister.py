@@ -41,7 +41,7 @@ def layout():
                             ),
                         ],
                         className="mb-3",
-                        style={"width": "400px", "height": "450px", "margin": "auto", "text-align": "center"}
+                        style={"width": "400px", "height": "450px", "margin": "auto", "text-align": "center", "position": "absolute", "top": "50%", "left": "50%", "transform": "translate(-50%, -50%)"}
                     ),
                     width=6,
                     style={"margin": "auto"}
@@ -50,12 +50,15 @@ def layout():
         ],
         fluid=True,
         style={
-            "padding": "4%",
-            "background-image": "url('path_to_your_image')",  # Reemplaza 'path_to_your_image' con la ruta real de tu imagen
+            #"padding": "4%",
+            "background-image": 'url("/assets/-2.jpg")',
             "background-size": "cover",
+            "height": "100vh",
+            "width": "100vw"
         }
     )
     return layout
+
 
 ########################################################################################################################
 # FUNCTIONS

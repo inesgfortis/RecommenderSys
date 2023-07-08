@@ -17,9 +17,9 @@ app = dash.Dash(__name__,external_stylesheets=[dbc.themes.JOURNAL], title="TFG",
 
 app.layout = dbc.Container(
     children = [
-        html.Br(),
-        html.H1("Optimización de sistemas recomendadores aplicado al campo de las películas",style={'fontSize': 44}),
-        html.Hr(),
+        # html.Br(),
+        # html.H1("Optimización de sistemas recomendadores aplicado al campo de las películas",style={'fontSize': 44}),
+        # html.Hr(),
 
         # Pages Navigator
         # dbc.Nav(
