@@ -98,22 +98,6 @@ def find_most_similar_user(ratings):
 
     # with open('userId-to-recommend.pkl', 'wb') as archivo:
     #     pickle.dump(most_similar_user, archivo)
-    
-
-# def compute_distance_matrix(ratings):
-#     # Create a pivot table
-#     pivot_table = pd.pivot_table(ratings, values='rating', index='userId', columns='movieId')
-
-#     # Replace NaN values with 0
-#     pivot_table = pivot_table.fillna(0)
-    
-#     # Compute the distance between users
-#     distances = pdist(pivot_table.values, metric='euclidean')
-
-#     # Find the most similar user
-#     distance_matrix = squareform(distances)
-#     most_similar_user = find_most_similar_user(ratings['userId'].max(),distance_matrix)
-#     return most_similar_user
 
 
 # Funtion to save the data introduced by the new user

@@ -12,6 +12,7 @@ with open('./user_password_dict.pkl', 'rb') as file:
 ## Dash Main page
 register_page(
     __name__,
+    name='Home',
     top_nav=True,
     path='/'
 )

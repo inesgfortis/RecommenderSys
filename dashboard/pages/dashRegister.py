@@ -10,7 +10,7 @@ with open('./user_password_dict.pkl', 'rb') as file:
 ## Dash
 register_page(
     __name__,
-    name='Register',
+    name='Registration',
     top_nav=True,
     path='/Register'
 )
