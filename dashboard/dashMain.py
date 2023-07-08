@@ -1,6 +1,6 @@
 # Libraries
 import dash
-from dash import html
+from dash import html, callback, Output, State, dcc
 import dash_bootstrap_components as dbc
 
 ## App
@@ -36,6 +36,9 @@ app.layout = dbc.Container(
         ),
 
         html.Div(dash.page_container),
+        dcc.Store(id='user-id-store', storage_type='memory'),         # userId associated to the recommendations
+        dcc.Store(id='new-user-id-store', storage_type='memory'),
+        dcc.Store(id='similar-user-id-store', storage_type='memory')  # most similar user to a new user
     ], 
     fluid = True
 )

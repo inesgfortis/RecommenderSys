@@ -4,6 +4,8 @@ from dash import html, register_page, callback, Input, Output, dcc, ctx, State
 import dash_bootstrap_components as dbc
 import pickle
 import time
+import numpy as np
+from scipy.spatial.distance import pdist, squareform
 
 
 # Load movies
@@ -69,6 +71,51 @@ def add_movies():
     
     return preguntas
 
+
+def find_most_similar_user(ratings):
+
+    # Create a pivot table and replace NaN values with 0
+    pivot_table = pd.pivot_table(ratings, values='rating', index='userId', columns='movieId')
+    pivot_table = pivot_table.fillna(0)
+    
+    # Compute the distance between users
+    distances = pdist(pivot_table.values, metric='euclidean')
+
+    # Find the most similar user
+    distance_matrix = squareform(distances)
+    userId = ratings['userId'].max()
+    user_index = userId-1 # Restamos 1 porque los índices en Python comienzan desde 0
+
+    # Select the desired distances
+    user_distances = distance_matrix[user_index]
+
+    # Find the most similar user
+    most_similar_user_index = np.argmin(user_distances[np.nonzero(user_distances)])
+    most_similar_user = most_similar_user_index + 1
+    print("El usuario más parecido al usuario "+str(userId)+" es: ", most_similar_user)
+
+    return most_similar_user
+
+    # with open('userId-to-recommend.pkl', 'wb') as archivo:
+    #     pickle.dump(most_similar_user, archivo)
+    
+
+# def compute_distance_matrix(ratings):
+#     # Create a pivot table
+#     pivot_table = pd.pivot_table(ratings, values='rating', index='userId', columns='movieId')
+
+#     # Replace NaN values with 0
+#     pivot_table = pivot_table.fillna(0)
+    
+#     # Compute the distance between users
+#     distances = pdist(pivot_table.values, metric='euclidean')
+
+#     # Find the most similar user
+#     distance_matrix = squareform(distances)
+#     most_similar_user = find_most_similar_user(ratings['userId'].max(),distance_matrix)
+#     return most_similar_user
+
+
 # Funtion to save the data introduced by the new user
 def add_new_user(valores_slider):
     # Load new users' info
@@ -94,6 +141,11 @@ def add_new_user(valores_slider):
     
     # Save the updated file
     ratings.to_csv('ratings.csv', index=False)
+
+    # Compute distance matrix
+    most_similar_user = find_most_similar_user(ratings)
+
+    return userId, most_similar_user
 
 
 
@@ -130,6 +182,8 @@ def layout():
 
 @callback(
     Output("hidden_div_for_redirect_callback_quiz", "children"),
+    Output("new-user-id-store", "data"),
+    Output('similar-user-id-store','data'),
     Input("listo-button", "n_clicks"),
     [State("range-slider-" + str(i+1), "value") for i in range(len(top_movies_dict.values()))]
 )
@@ -138,22 +192,11 @@ def save_slider_values(n_clicks, *slider_values):
     if n_clicks:
         valores_slider = {movieIds[i]: value for i, value in enumerate(slider_values)}
         print(valores_slider)
-        add_new_user(valores_slider)
-        # with open('valores_slider.pkl', 'wb') as archivo:
-        #     pickle.dump(valores_slider, archivo)
-
-        return dcc.Location(pathname="/Recommendations", id="redirect-to-recs-new-user")
-
-    return None
-
-
-# @callback(
-#     Output('url', 'pathname'),
-#     Input('listo-button', 'n_clicks')
-# )
-# def redirect_to_movies_page(n_clicks):
-#     if n_clicks:
-#         return '/Recommendations'
-
+        user_id, most_similar_user = add_new_user(valores_slider)
+        print(user_id)
+        print(most_similar_user)
+        return dcc.Location(pathname="/Recommendations", id="redirect-to-recs-new-user"), user_id,most_similar_user
+    
+    return None, None, None
 
 

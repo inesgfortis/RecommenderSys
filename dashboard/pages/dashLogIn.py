@@ -70,9 +70,44 @@ def get_password(username):
             return user_info['password']
     return None
 
+def get_user_id(username):
+    for user_id, user_data in user_password_dict.items():
+        if user_data['user'] == username:
+            return user_id
+    # Return None if the username is not found
+    return None  
+
 ########################################################################################################################
 # CALLBACKS
 ########################################################################################################################
+
+# @callback(
+#     Output('username-error-popup', 'displayed'),
+#     Output('password-error-popup', 'displayed'),
+#     Output('username', 'value'),
+#     Output('password', 'value'),
+#     Output("hidden_div_for_redirect_callback", "children"),
+#     [Input('login-button', 'n_clicks')],
+#     [State('username', 'value'), State('password', 'value')]
+# )
+# def handle_login_button(n_clicks, username, password):
+#     existing_usernames = [user['user'] for user in user_password_dict.values()]
+
+#     # User does not exist
+#     if n_clicks and username not in existing_usernames:
+#         return True, False, '', '', None
+
+#     # User exists but incorrect password
+#     if n_clicks and username in existing_usernames and password != get_password(username):
+#         return False, True, username, '', None
+
+#     # User exists and correct password
+#     if n_clicks and username in existing_usernames and password == get_password(username):
+#         return False, False, username, password, dcc.Location(pathname="/Recommendations", id="redirect-to-recs")
+
+#     return False, False, username, password, None
+
+
 
 @callback(
     Output('username-error-popup', 'displayed'),
@@ -80,6 +115,7 @@ def get_password(username):
     Output('username', 'value'),
     Output('password', 'value'),
     Output("hidden_div_for_redirect_callback", "children"),
+    Output("user-id-store", "data"),  # Store the user ID here
     [Input('login-button', 'n_clicks')],
     [State('username', 'value'), State('password', 'value')]
 )
@@ -88,17 +124,22 @@ def handle_login_button(n_clicks, username, password):
 
     # User does not exist
     if n_clicks and username not in existing_usernames:
-        return True, False, '', '', None
+        return True, False, '', '', None, None
 
     # User exists but incorrect password
     if n_clicks and username in existing_usernames and password != get_password(username):
-        return False, True, username, '', None
+        return False, True, username, '', None, None
 
     # User exists and correct password
     if n_clicks and username in existing_usernames and password == get_password(username):
-        return False, False, username, password, dcc.Location(pathname="/Recommendations", id="redirect-to-recs")
+        user_id = get_user_id(username)
+        print(user_id)
 
-    return False, False, username, password, None
+        return False, False, username, password, dcc.Location(pathname="/Recommendations", id="redirect-to-recs"), user_id
+
+    return False, False, username, password, None, None
+
+
 
 ########################################################################################################################
 ########################################################################################################################

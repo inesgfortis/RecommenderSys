@@ -21,6 +21,7 @@ ratings = pd.read_csv('ratings.csv')
 # ---------------------------------------------------- #
 userId = 1
 
+
 ## Dash
 register_page(
     __name__,
@@ -34,13 +35,31 @@ register_page(
 # FUNCTIONS
 ########################################################################################################################
 
+# Load movie images
+paths_img = os.listdir("./assets")
+num_images = [int(path.split(".")[0]) for path in paths_img]
+
 # Function to get the movie images associated with the recommendations for a given user
 def get_recommendation_images(userId):
-
     numbers = [item[0] for item in recommendations[userId]]
     images = []
     for number in numbers:
-        image_path = f"{number}.jpg"
+        if number in num_images:
+            image_path = f"{number}.jpg"
+        else:
+            image_path = "0.jpg"
+        image = html.Img(src=dash.get_asset_url(image_path), style={"width": "110px", "height": "140px", "margin": "10px"})
+        images.append(image)
+    return images
+
+
+def get_movie_images(numbers):
+    images = []
+    for number in numbers:
+        if number in num_images:
+            image_path = f"{number}.jpg"
+        else:
+            image_path = "0.jpg"
         image = html.Img(src=dash.get_asset_url(image_path), style={"width": "110px", "height": "140px", "margin": "10px"})
         images.append(image)
     return images
@@ -60,23 +79,6 @@ def get_user_preferences(userId, k, like=True):
         movieIds = list(sorted_movies.tail(k).copy()['movieId'])
 
     return movieIds
-
-
-# Load movie images
-paths_img = os.listdir("./assets")
-num_images = [int(path.split(".")[0]) for path in paths_img]
-
-def get_movie_images(numbers):
-    images = []
-    for number in numbers:
-        if number in num_images:
-            image_path = f"{number}.jpg"
-        else:
-            image_path = "0.jpg"
-        image = html.Img(src=dash.get_asset_url(image_path), style={"width": "110px", "height": "140px", "margin": "10px"})
-        images.append(image)
-    
-    return images
 
 
 ########################################################################################################################
