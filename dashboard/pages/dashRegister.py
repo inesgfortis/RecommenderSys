@@ -50,7 +50,6 @@ def layout():
         ],
         fluid=True,
         style={
-            #"padding": "4%",
             "background-image": 'url("/assets/-2.jpg")',
             "background-size": "cover",
             "height": "100vh",
@@ -76,9 +75,12 @@ def add_new_user(username, password):
     # Add the new user to the dictionary
     user_password_dict[new_id] = {"user": username, "password": password}
 
+    # --------------------------------- #
+    #           Ucomment this           #
+    # --------------------------------- #
     # Update the file
-    with open('user_password_dict.pkl', 'wb') as file:
-        pickle.dump(user_password_dict, file)
+    # with open('user_password_dict.pkl', 'wb') as file:
+    #     pickle.dump(user_password_dict, file)
 
 ########################################################################################################################
 # CALLBACKS

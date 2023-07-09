@@ -16,18 +16,13 @@ with open('recommendations.pkl', 'rb') as file:
 
 ratings = pd.read_csv('ratings.csv')
 
-# ---------------------------------------------------- #
-# PENDIENTE: leer el userId en lugar de ponerlo a puño #
-# ---------------------------------------------------- #
-userId = 1
-
 
 ## Dash
 register_page(
     __name__,
     name='Recommendations',
     top_nav=True,
-    path='/Recommendations'
+    path_template='/Recommendations/<userId>'
 )
 
 
@@ -66,7 +61,6 @@ def get_movie_images(numbers):
 
 
 def get_user_preferences(userId, k, like=True):
-
     # Filter ratings for the specified userId and sort movies by rating in descending order
     user_ratings = ratings[ratings['userId'] == userId].copy()
     sorted_movies = user_ratings.sort_values(by='rating', ascending=False)
@@ -84,73 +78,80 @@ def get_user_preferences(userId, k, like=True):
 ########################################################################################################################
 # TAB CONTENT
 ########################################################################################################################
-def layout():
 
-    layout = dbc.Container(
-        [
-            dbc.Row(
-                dbc.Col(
-                    dbc.Card(
-                        [
-                            dbc.CardHeader(
-                                "Películas que creemos que podrían gustarte",
-                                className="bg-primary text-white",
-                                style={"text-align": "left", "font-size": "24px"},
-                            ),
-                            dbc.CardBody(
-                                [
-                                    dbc.Row(
-                                        get_recommendation_images(userId),
-                                        justify="center",
-                                        align="center",
-                                        className="mb-3",
-                                    ),
-                                ],
-                            ),
-                            dbc.CardHeader(
-                                "en base a aquellas películas que has disfrutado",
-                                className="bg-primary text-white",
-                                style={"text-align": "left", "font-size": "24px"},
-                            ),
-                            dbc.CardBody(
-                                [
-                                    dbc.Row(
-                                        get_movie_images(get_user_preferences(userId,10)),
-                                        justify="center",
-                                        align="center",
-                                        className="mb-3",
-                                    ),
-                                ],
-                            ),
-                            dbc.CardHeader(
-                                "y aquellas que no te han gustado tanto",
-                                className="bg-primary text-white",
-                                style={"text-align": "left", "font-size": "24px"},
-                            ),
-                            dbc.CardBody(
-                                [
-                                    dbc.Row(
-                                        get_movie_images(get_user_preferences(userId,10,False)),
-                                        justify="center",
-                                        align="center",
-                                        className="mb-3",
-                                    ),
-                                ],
-                            ),
-                        
-                        ],
-                        style={"width": "1400px", "margin": "auto"},
+def layout(userId=None):
+    if userId == None:
+        layout = []
+    else:
+        userId = int(userId)
+        recs = get_recommendation_images(userId)
+        likes = get_movie_images(get_user_preferences(userId,10))
+        dislikes = get_movie_images(get_user_preferences(userId,10,False))
+        layout = dbc.Container(
+            [
+                dbc.Row(
+                    dbc.Col(
+                        dbc.Card(
+                            [
+                                dbc.CardHeader(
+                                    "Películas que creemos que podrían gustarte",
+                                    className="bg-primary text-white",
+                                    style={"text-align": "left", "font-size": "24px"},
+                                ),
+                                dbc.CardBody(
+                                    [
+                                        dbc.Row(
+                                            recs,
+                                            justify="center",
+                                            align="center",
+                                            className="mb-3",
+                                        ),
+                                    ],
+                                ),
+                                dbc.CardHeader(
+                                    "en base a aquellas películas que has disfrutado",
+                                    className="bg-primary text-white",
+                                    style={"text-align": "left", "font-size": "24px"},
+                                ),
+                                dbc.CardBody(
+                                    [
+                                        dbc.Row(
+                                            likes,
+                                            justify="center",
+                                            align="center",
+                                            className="mb-3",
+                                        ),
+                                    ],
+                                ),
+                                dbc.CardHeader(
+                                    "y aquellas que no te han gustado tanto",
+                                    className="bg-primary text-white",
+                                    style={"text-align": "left", "font-size": "24px"},
+                                ),
+                                dbc.CardBody(
+                                    [
+                                        dbc.Row(
+                                            dislikes,
+                                            justify="center",
+                                            align="center",
+                                            className="mb-3",
+                                        ),
+                                    ],
+                                ),
+                            
+                            ],
+                            style={"width": "1400px", "margin": "auto"},
+                        ),
                     ),
                 ),
-            ),
-            html.Div(style={"height": "10px"}),
-            html.Div(id="hidden_div_to_end_session"),
-            dbc.Button("Cerrar sesión", id="logout-button", color="secondary", className="mt-3", style={"width": "10%"}),
+                html.Div(style={"height": "10px"}),
+                html.Div(id="hidden_div_to_end_session"),
+                dbc.Button("Cerrar sesión", id="logout-button", color="secondary", className="mt-3", style={"width": "10%"}),
 
-        ],
-        fluid=True,
-        style={"padding": "4%"},
-    )
+            ],
+            fluid=True,
+            style={"padding": "4%"},
+        )
     return layout
 
 

@@ -1,18 +1,10 @@
 # Libraries
 import dash
-from dash import html, callback, Output, State, dcc
+from dash import html, dcc
 import dash_bootstrap_components as dbc
 
 ## App
-app = dash.Dash(__name__,external_stylesheets=[dbc.themes.JOURNAL], title="TFG", use_pages=True)
-
-# app = dash.Dash(
-#     __name__,
-#     suppress_callback_exceptions=True,
-#     external_stylesheets=[dbc.themes.JOURNAL],
-#     title="TFG",
-#     use_pages=True,
-# )
+app = dash.Dash(__name__,external_stylesheets=[dbc.themes.JOURNAL],suppress_callback_exceptions=True, title="TFG", use_pages=True)
 
 
 app.layout = dbc.Container(
@@ -35,20 +27,13 @@ app.layout = dbc.Container(
         #         pills = True,
         # ),
 
-        html.Div(dash.page_container),
-        dcc.Store(id='user-id-store', storage_type='memory'),         # userId associated to the recommendations
-        dcc.Store(id='new-user-id-store', storage_type='memory'),     # new user
-        dcc.Store(id='similar-user-id-store', storage_type='memory')  # most similar user to a new user
+        html.Div(id ="dash-content",children = dash.page_container),
+        # dcc.Store(id='user-id-store', storage_type='memory'),         # userId associated to the recommendations
+        # dcc.Store(id='new-user-id-store', storage_type='memory'),     # new user
+        # dcc.Store(id='similar-user-id-store', storage_type='memory')  # most similar user to a new user
     ], 
     fluid = True
 )
-
-
-
-########################################################################################################################
-# CALLBACKS
-########################################################################################################################
-
 
 
 ########################################################################################################################

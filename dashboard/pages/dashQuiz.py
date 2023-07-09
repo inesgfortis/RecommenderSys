@@ -1,6 +1,6 @@
 import pandas as pd
 import dash
-from dash import html, register_page, callback, Input, Output, dcc, ctx, State
+from dash import html, register_page, callback, Input, Output, dcc, State
 import dash_bootstrap_components as dbc
 import pickle
 import time
@@ -96,16 +96,9 @@ def find_most_similar_user(ratings):
 
     return most_similar_user
 
-    # with open('userId-to-recommend.pkl', 'wb') as archivo:
-    #     pickle.dump(most_similar_user, archivo)
-
 
 # Funtion to save the data introduced by the new user
-def add_new_user(valores_slider):
-    # Load new users' info
-    # with open('../dashboard/valores_slider.pkl', 'rb') as file:
-    #     valores_slider = pickle.load(file)
-        
+def add_new_user(valores_slider):       
     ratings = pd.read_csv('ratings.csv')
     userId = ratings['userId'].max()+1
     timestamp = int(time.time())
@@ -122,9 +115,13 @@ def add_new_user(valores_slider):
     
     # Concatenate the ratings DataFrame and new_ratings to add the new lines at the end
     ratings = pd.concat([ratings, new_ratings], ignore_index=True)
-    
-    # Save the updated file
-    ratings.to_csv('ratings.csv', index=False)
+
+
+    # --------------------------------- #
+    #           Ucomment this           #
+    # --------------------------------- #   
+    # # Save the updated file
+    # ratings.to_csv('ratings.csv', index=False)
 
     # Compute distance matrix
     most_similar_user = find_most_similar_user(ratings)
@@ -148,7 +145,8 @@ def layout():
                 dbc.CardFooter(
                     [
                         html.Div(id="hidden_div_for_redirect_callback_quiz"),
-                        dcc.Link(dbc.Button("Listo", id="listo-button", color="primary", className="mr-1"), href="/Recommendations"),
+                        dbc.Button("Listo", id="listo-button", color="primary", className="mr-1"),
+                        #dbc.Button("Continuar", id="login-button", color="primary", className="mt-3", style={"width": "100%"}),
                     ]
                 ),
             ],
@@ -166,8 +164,8 @@ def layout():
 
 @callback(
     Output("hidden_div_for_redirect_callback_quiz", "children"),
-    Output("new-user-id-store", "data"),
-    Output('similar-user-id-store','data'),
+    # Output("new-user-id-store", "data"),
+    # Output('similar-user-id-store','data'),
     Input("listo-button", "n_clicks"),
     [State("range-slider-" + str(i+1), "value") for i in range(len(top_movies_dict.values()))]
 )
@@ -179,8 +177,8 @@ def save_slider_values(n_clicks, *slider_values):
         user_id, most_similar_user = add_new_user(valores_slider)
         print(user_id)
         print(most_similar_user)
-        return dcc.Location(pathname="/Recommendations", id="redirect-to-recs-new-user"), user_id,most_similar_user
+        #time.sleep(15)
+        return dcc.Location(pathname=f"/Recommendations/{most_similar_user}", id="redirect-to-recs-new-user")#, user_id,most_similar_user
     
     return None, None, None
-
 
