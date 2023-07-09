@@ -14,9 +14,6 @@ with open('name_to_movieId.pkl', 'rb') as file:
 with open('recommendations.pkl', 'rb') as file:
     recommendations = pickle.load(file)
 
-ratings = pd.read_csv('ratings.csv')
-
-
 ## Dash
 register_page(
     __name__,
@@ -61,6 +58,9 @@ def get_movie_images(numbers):
 
 
 def get_user_preferences(userId, k, like=True):
+
+    ratings = pd.read_csv('ratings.csv')
+
     # Filter ratings for the specified userId and sort movies by rating in descending order
     user_ratings = ratings[ratings['userId'] == userId].copy()
     sorted_movies = user_ratings.sort_values(by='rating', ascending=False)
@@ -75,6 +75,15 @@ def get_user_preferences(userId, k, like=True):
     return movieIds
 
 
+def add_recommendations(new_user, most_similar_user):
+    recs = recommendations[most_similar_user]
+    recommendations[new_user] = recs
+    
+    # Update the local file
+    with open('recommendations.pkl', 'wb') as file:
+        pickle.dump(recommendations, file)  
+
+  
 ########################################################################################################################
 # TAB CONTENT
 ########################################################################################################################
@@ -84,9 +93,25 @@ def layout(userId=None):
         layout = []
     else:
         userId = int(userId)
-        recs = get_recommendation_images(userId)
-        likes = get_movie_images(get_user_preferences(userId,10))
-        dislikes = get_movie_images(get_user_preferences(userId,10,False))
+        recs = []
+        likes = []
+        dislikes = []
+
+        if len(str(userId))>3:
+            most_similar_user = int(str(userId)[3:])
+            new_user = int(str(userId)[:3])
+
+            recs = get_recommendation_images(most_similar_user)
+            likes = get_movie_images(get_user_preferences(new_user,7))
+            dislikes = get_movie_images(get_user_preferences(new_user,8,False))
+
+            add_recommendations(new_user, most_similar_user)
+
+        else:
+            recs = get_recommendation_images(userId)
+            likes = get_movie_images(get_user_preferences(userId,10))
+            dislikes = get_movie_images(get_user_preferences(userId,10,False))
+
         layout = dbc.Container(
             [
                 dbc.Row(

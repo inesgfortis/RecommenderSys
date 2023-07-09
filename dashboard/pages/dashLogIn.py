@@ -1,7 +1,6 @@
 # Libraries
 import pickle
-import dash
-from dash import dcc,html, register_page, callback, Input, Output, State, ctx
+from dash import dcc,html, register_page, callback, Input, Output, State
 import dash_bootstrap_components as dbc
 
 # Load user-password database
@@ -20,6 +19,7 @@ register_page(
 ########################################################################################################################
 # TAB CONTENT
 ########################################################################################################################
+
 def layout():
     layout = dbc.Container(
         [
@@ -88,7 +88,6 @@ def get_user_id(username):
     Output('username', 'value'),
     Output('password', 'value'),
     Output("hidden_div_for_redirect_callback", "children"),
-    #Output("user-id-store", "data"),  # Store the user ID here
     [Input('login-button', 'n_clicks')],
     [State('username', 'value'), State('password', 'value')]
 )
@@ -97,20 +96,20 @@ def handle_login_button(n_clicks, username, password):
 
     # User does not exist
     if n_clicks and username not in existing_usernames:
-        return True, False, '', '', None#, None
+        return True, False, '', '', None
 
     # User exists but incorrect password
     if n_clicks and username in existing_usernames and password != get_password(username):
-        return False, True, username, '', None#, None
+        return False, True, username, '', None
 
     # User exists and correct password
     if n_clicks and username in existing_usernames and password == get_password(username):
         user_id = get_user_id(username)
         print(user_id)
 
-        return False, False, username, password, dcc.Location(pathname=f"/Recommendations/{user_id}", id="redirect-to-recs")#, user_id
+        return False, False, username, password, dcc.Location(pathname=f"/Recommendations/{user_id}", id="redirect-to-recs")
 
-    return False, False, username, password, None#, None
+    return False, False, username, password, None
 
 
 ########################################################################################################################

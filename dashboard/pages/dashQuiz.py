@@ -17,7 +17,6 @@ with open('top_movies_dict.pkl', 'rb') as file:
 with open('./name_to_movieID.pkl', 'rb') as file:
     name_to_movieID = pickle.load(file)
 
-# ratings = pd.read_csv('ratings.csv')
 
 ## Dash
 register_page(
@@ -126,17 +125,13 @@ def add_new_user(valores_slider):
     # Concatenate the ratings DataFrame and new_ratings to add the new lines at the end
     ratings = pd.concat([ratings, new_ratings], ignore_index=True)
 
-    # --------------------------------- #
-    #           Ucomment this           #
-    # --------------------------------- #   
-    # # Save the updated file
-    # ratings.to_csv('ratings.csv', index=False)
+    # Save the updated file
+    ratings.to_csv('ratings.csv', index=False)
 
     # Compute distance matrix
     most_similar_user = find_most_similar_user(ratings)
 
     return userId, most_similar_user
-
 
 
 ########################################################################################################################
@@ -164,16 +159,12 @@ def layout():
     ])
     return layout
 
-
-
 ########################################################################################################################
 # CALLBACKS
 ########################################################################################################################
 
 @callback(
     Output("hidden_div_for_redirect_callback_quiz", "children"),
-    # Output("new-user-id-store", "data"),
-    # Output('similar-user-id-store','data'),
     Input("listo-button", "n_clicks"),
     [State("range-slider-" + str(i+1), "value") for i in range(15)]
 )
@@ -187,7 +178,6 @@ def save_slider_values(n_clicks, *slider_values):
         user_id, most_similar_user = add_new_user(valores_slider)
         print(user_id)
         print(most_similar_user)
-        return dcc.Location(pathname=f"/Recommendations/{most_similar_user}", id="redirect-to-recs-new-user")#, user_id,most_similar_user
+        return dcc.Location(pathname=f"/Recommendations/{str(user_id) + str(most_similar_user)}", id="redirect-to-recs-new-user")
     
-    return None, None, None
-
+    return None
