@@ -6,7 +6,9 @@ import pickle
 import time
 import numpy as np
 from scipy.spatial.distance import pdist, squareform
+import random
 
+seed = random.randint(1, 100)
 
 # Load movies
 with open('top_movies_dict.pkl', 'rb') as file:
@@ -30,11 +32,19 @@ register_page(
 # FUNCTIONS
 ########################################################################################################################
 
+def randomly_select_movies(dictionary, quantity, seed=None):
+    if seed is not None:
+        random.seed(seed)
+    selected_keys = random.sample(list(dictionary.keys()), quantity)
+    selected_dictionary = {key: dictionary[key] for key in selected_keys}
+    print(selected_dictionary.keys())
+    return selected_dictionary
+
 def add_movies():
     preguntas = []
-    
-    #for i, pelicula in enumerate(top_movies_dict.values()):
-    for i, (movieId, pelicula) in enumerate(top_movies_dict.items()):
+    filtered_movies = randomly_select_movies(top_movies_dict, 15,seed)
+
+    for i, (movieId, pelicula) in enumerate(filtered_movies.items()):
         if i % 5 == 0:
             fila_preguntas = []
         
@@ -65,7 +75,7 @@ def add_movies():
         
         fila_preguntas.append(pregunta)
         
-        if (i + 1) % 5 == 0 or i == len(top_movies_dict.values()) - 1:
+        if (i + 1) % 5 == 0 or i == len(filtered_movies.values()) - 1:
             fila = dbc.Row(className="row", style={"margin-bottom": "20px"}, children=fila_preguntas)
             preguntas.append(fila)
     
@@ -116,7 +126,6 @@ def add_new_user(valores_slider):
     # Concatenate the ratings DataFrame and new_ratings to add the new lines at the end
     ratings = pd.concat([ratings, new_ratings], ignore_index=True)
 
-
     # --------------------------------- #
     #           Ucomment this           #
     # --------------------------------- #   
@@ -146,7 +155,6 @@ def layout():
                     [
                         html.Div(id="hidden_div_for_redirect_callback_quiz"),
                         dbc.Button("Listo", id="listo-button", color="primary", className="mr-1"),
-                        #dbc.Button("Continuar", id="login-button", color="primary", className="mt-3", style={"width": "100%"}),
                     ]
                 ),
             ],
@@ -167,17 +175,18 @@ def layout():
     # Output("new-user-id-store", "data"),
     # Output('similar-user-id-store','data'),
     Input("listo-button", "n_clicks"),
-    [State("range-slider-" + str(i+1), "value") for i in range(len(top_movies_dict.values()))]
+    [State("range-slider-" + str(i+1), "value") for i in range(15)]
 )
 def save_slider_values(n_clicks, *slider_values):
-    movieIds = list(top_movies_dict.keys())
+    filtered_movies = randomly_select_movies(top_movies_dict, 15,seed)
+    movieIds = list(filtered_movies.keys())
+
     if n_clicks:
         valores_slider = {movieIds[i]: value for i, value in enumerate(slider_values)}
         print(valores_slider)
         user_id, most_similar_user = add_new_user(valores_slider)
         print(user_id)
         print(most_similar_user)
-        #time.sleep(15)
         return dcc.Location(pathname=f"/Recommendations/{most_similar_user}", id="redirect-to-recs-new-user")#, user_id,most_similar_user
     
     return None, None, None
