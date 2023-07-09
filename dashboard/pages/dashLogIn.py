@@ -54,8 +54,8 @@ def layout():
         style={
             "background-image":'url("/assets/-2.jpg")',
             "background-size": "cover",
-            "height": "100vh",
-            "width": "100vw"
+            "height": "99vh",
+            "width": "99vw"
         }
     )
     return layout
